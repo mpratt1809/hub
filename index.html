@@ -109,6 +109,21 @@
     .card-books::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
     .card-books:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(201,168,76,0.18); }
 
+    /* Shopping — teal */
+    .card-shop { --c: #2dd4bf; --cg: rgba(45,212,191,0.12); }
+    .card-shop::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-shop:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(45,212,191,0.18); }
+
+    /* Cookbook — orange */
+    .card-cook { --c: #ff7c43; --cg: rgba(255,124,67,0.12); }
+    .card-cook::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-cook:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(255,124,67,0.18); }
+
+    /* Cleaning — purple */
+    .card-clean { --c: #bf7fff; --cg: rgba(191,127,255,0.12); }
+    .card-clean::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-clean:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(191,127,255,0.18); }
+
     .card-icon {
       font-size: 40px;
       line-height: 1;
@@ -203,6 +218,33 @@
         <div class="card-body">
           <div class="card-name">PRATT READS</div>
           <div class="card-desc">Track books, log notes & quotes, and hit your yearly reading goals.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="app-card card-shop" href="https://mpratt1809.github.io/shopping/" target="_blank" rel="noopener">
+        <div class="card-icon">🛒</div>
+        <div class="card-body">
+          <div class="card-name">SHOPPING LIST</div>
+          <div class="card-desc">Live shared grocery list — organized by store, synced in real time.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="app-card card-cook" href="https://mpratt1809.github.io/cookbook/" target="_blank" rel="noopener">
+        <div class="card-icon">🍳</div>
+        <div class="card-body">
+          <div class="card-name">COOKBOOK</div>
+          <div class="card-desc">Saved recipes, meal ideas, and weekly meal planning for the household.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="app-card card-clean" href="https://mpratt1809.github.io/cleaning/" target="_blank" rel="noopener">
+        <div class="card-icon">🧹</div>
+        <div class="card-body">
+          <div class="card-name">CLEANING</div>
+          <div class="card-desc">Weekly and monthly cleaning schedule — tasks, rotations, and checklists.</div>
         </div>
         <span class="card-arrow">→</span>
       </a>
