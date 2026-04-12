@@ -1,302 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PrattHub</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #0a0a0f;
-    --card: #141420;
-    --card-hover: #1c1c2e;
-    --border: rgba(255,255,255,0.05);
-    --text: #e8e8ef;
-    --text-dim: #6a6a82;
-    --lift: #63b4ff;
-    --lift-glow: rgba(99,180,255,0.10);
-    --supps: #82dc82;
-    --supps-glow: rgba(130,220,130,0.10);
-    --cal: #ffaa64;
-    --cal-glow: rgba(255,170,100,0.10);
-    --cook: #ff8ca0;
-    --cook-glow: rgba(255,140,160,0.10);
-    --shop: #2dd4bf;
-    --shop-glow: rgba(45,212,191,0.10);
-    --clean: #c084fc;
-    --clean-glow: rgba(192,132,252,0.10);
-  }
-
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 50% 40% at 25% 25%, rgba(99,180,255,0.04) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 75% 75%, rgba(255,140,160,0.03) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 680px;
-    width: 100%;
-  }
-
-  /* Header */
-  .header {
-    text-align: center;
-    margin-bottom: 52px;
-  }
-
-  .header .eyebrow {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 10px;
-  }
-
-  .header h1 {
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: -2px;
-    background: linear-gradient(135deg, #fff 0%, #8888a0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Grid */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-  }
-
-  /* Card */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px 24px 28px;
-    text-decoration: none;
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-
-  .card:hover {
-    background: var(--card-hover);
-    border-color: rgba(255,255,255,0.08);
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
-  }
-
-  .card:hover::before { opacity: 1; }
-
-  /* Accent glows */
-  .card--lift::before { background: radial-gradient(circle at 50% 30%, var(--lift-glow), transparent 65%); }
-  .card--supps::before { background: radial-gradient(circle at 50% 30%, var(--supps-glow), transparent 65%); }
-  .card--cal::before { background: radial-gradient(circle at 50% 30%, var(--cal-glow), transparent 65%); }
-  .card--cook::before { background: radial-gradient(circle at 50% 30%, var(--cook-glow), transparent 65%); }
-  .card--shop::before { background: radial-gradient(circle at 50% 30%, var(--shop-glow), transparent 65%); }
-  .card--clean::before { background: radial-gradient(circle at 50% 30%, var(--clean-glow), transparent 65%); }
-
-  .card:hover.card--lift { border-color: rgba(99,180,255,0.15); }
-  .card:hover.card--supps { border-color: rgba(130,220,130,0.15); }
-  .card:hover.card--cal { border-color: rgba(255,170,100,0.15); }
-  .card:hover.card--cook { border-color: rgba(255,140,160,0.15); }
-  .card:hover.card--shop { border-color: rgba(45,212,191,0.15); }
-  .card:hover.card--clean { border-color: rgba(192,132,252,0.15); }
-
-  /* Icon */
-  .card-icon {
-    font-size: 36px;
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 14px;
-    transition: transform 0.35s ease;
-  }
-
-  .card:hover .card-icon { transform: scale(1.1); }
-
-  .card--lift .card-icon { background: rgba(99,180,255,0.1); }
-  .card--supps .card-icon { background: rgba(130,220,130,0.1); }
-  .card--cal .card-icon { background: rgba(255,170,100,0.1); }
-  .card--cook .card-icon { background: rgba(255,140,160,0.1); }
-  .card--shop .card-icon { background: rgba(45,212,191,0.1); }
-  .card--clean .card-icon { background: rgba(192,132,252,0.1); }
-
-  /* Title */
-  .card-title {
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-  }
-
-  .card--lift .card-title { color: var(--lift); }
-  .card--supps .card-title { color: var(--supps); }
-  .card--cal .card-title { color: var(--cal); }
-  .card--cook .card-title { color: var(--cook); }
-  .card--shop .card-title { color: var(--shop); }
-  .card--clean .card-title { color: var(--clean); }
-
-  /* Description — hidden by default, revealed on hover */
-  .card-desc {
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.5;
-    margin-top: 0;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  .card:hover .card-desc {
-    margin-top: 10px;
-    max-height: 60px;
-    opacity: 1;
-  }
-
-  /* Footer */
-  .footer {
-    text-align: center;
-    margin-top: 48px;
-    font-size: 13px;
-    color: var(--text-dim);
-    opacity: 0.5;
-  }
-
-  /* Responsive */
-  @media (max-width: 700px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .header h1 { font-size: 36px; }
-    .card { padding: 24px 16px 20px; }
-    .card-icon { font-size: 30px; width: 52px; height: 52px; }
-    .card-title { font-size: 12px; letter-spacing: 2px; }
-    .card-desc { font-size: 12px; }
-  }
-  @media (max-width: 400px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  }
-
-  /* Mobile: show desc always since no hover */
-  @media (hover: none) {
-    .card-desc {
-      margin-top: 8px;
-      max-height: 60px;
-      opacity: 0.7;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pratt Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0f14; --surface: #161a22; --surface2: #1e2330; --border: #2a3045;
+      --accent: #e8ff47; --accent2: #47c8ff;
+      --text: #f0f2f8; --muted: #6b7592;
+      --font-head: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 16px;
     }
-  }
 
-  /* Entrance */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  .header { animation: fadeUp 0.5s ease both; }
-  .card:nth-child(1) { animation: fadeUp 0.45s ease 0.08s both; }
-  .card:nth-child(2) { animation: fadeUp 0.45s ease 0.14s both; }
-  .card:nth-child(3) { animation: fadeUp 0.45s ease 0.20s both; }
-  .card:nth-child(4) { animation: fadeUp 0.45s ease 0.26s both; }
-  .card:nth-child(5) { animation: fadeUp 0.45s ease 0.32s both; }
-  .card:nth-child(6) { animation: fadeUp 0.45s ease 0.38s both; }
-  .footer { animation: fadeUp 0.45s ease 0.44s both; }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(71,200,255,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 90%, rgba(232,255,71,0.05) 0%, transparent 60%);
+    }
 
-</style>
+    /* ── Layout ── */
+    .wrapper {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 24px;
+      gap: 48px;
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; }
+    .header h1 {
+      font-family: var(--font-head);
+      font-size: clamp(64px, 16vw, 120px);
+      letter-spacing: 6px;
+      line-height: 0.9;
+    }
+    .header h1 span { color: var(--accent); }
+    .header p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* ── App Grid ── */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    /* ── App Card ── */
+    .app-card {
+      position: relative; overflow: hidden;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      text-decoration: none;
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .app-card::before {
+      content: ''; position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.22s;
+    }
+
+    .app-card:hover { transform: translateY(-6px); }
+
+    /* LiftLog — blue */
+    .card-lift { --c: #47c8ff; --cg: rgba(71,200,255,0.12); }
+    .card-lift::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-lift:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(71,200,255,0.18); }
+
+    /* Supplements — green */
+    .card-supps { --c: #2ed573; --cg: rgba(46,213,115,0.12); }
+    .card-supps::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-supps:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(46,213,115,0.18); }
+
+    /* Family Calendar — yellow */
+    .card-cal { --c: #e8ff47; --cg: rgba(232,255,71,0.10); }
+    .card-cal::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-cal:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(232,255,71,0.16); }
+
+    .card-books { --c: #c9a84c; --cg: rgba(201,168,76,0.12); }
+    .card-books::before { background: radial-gradient(circle at 50% 0%, var(--cg), transparent 70%); }
+    .card-books:hover { border-color: var(--c); box-shadow: 0 16px 48px rgba(201,168,76,0.18); }
+
+    .card-icon {
+      font-size: 40px;
+      line-height: 1;
+      position: relative; z-index: 1;
+    }
+
+    .card-body { position: relative; z-index: 1; }
+
+    .card-name {
+      font-family: var(--font-head);
+      font-size: 30px;
+      letter-spacing: 2px;
+      color: var(--c);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .card-arrow {
+      position: absolute; z-index: 1;
+      bottom: 24px; right: 24px;
+      font-size: 20px;
+      color: var(--c);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.22s, transform 0.22s;
+    }
+    .app-card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      .app-grid { grid-template-columns: 1fr; }
+      .wrapper { padding: 32px 16px; gap: 36px; }
+    }
+  </style>
 </head>
 <body>
+  <div class="wrapper">
 
-<div class="container">
+    <header class="header">
+      <h1>PRATT<span>HUB</span></h1>
+      <p>Your family's digital home base</p>
+    </header>
 
-  <div class="header">
-    <div class="eyebrow">Pratt Hub</div>
-    <h1>PRATTHUB</h1>
+    <div class="app-grid">
+
+      <a class="app-card card-lift" href="https://mpratt1809.github.io/liftlog/" target="_blank" rel="noopener">
+        <div class="card-icon">🏋️</div>
+        <div class="card-body">
+          <div class="card-name">LIFTLOG</div>
+          <div class="card-desc">Track workouts, PRs, cardio, and progress charts for Sky & Meagan.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="app-card card-supps" href="https://mpratt1809.github.io/supplements/" target="_blank" rel="noopener">
+        <div class="card-icon">💊</div>
+        <div class="card-body">
+          <div class="card-name">SUPPLEMENTS</div>
+          <div class="card-desc">Daily supplement tracker — log, schedule, and stay consistent.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="app-card card-cal" href="https://mpratt1809.github.io/family-calendar/" target="_blank" rel="noopener">
+        <div class="card-icon">📅</div>
+        <div class="card-body">
+          <div class="card-name">FAMILY CALENDAR</div>
+          <div class="card-desc">Shared calendar to keep the whole household in sync.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="app-card card-books" href="https://mpratt1809.github.io/books/" target="_blank" rel="noopener">
+        <div class="card-icon">📚</div>
+        <div class="card-body">
+          <div class="card-name">PRATT READS</div>
+          <div class="card-desc">Track books, log notes & quotes, and hit your yearly reading goals.</div>
+        </div>
+        <span class="card-arrow">→</span>
+    </div>
+
+    <footer class="footer">Pratt Family · Built with ❤️</footer>
+
   </div>
-
-  <div class="grid">
-
-    <a href="https://mpratt1809.github.io/liftlog/" class="card card--lift">
-      <div class="card-icon">🏋️</div>
-      <div class="card-title">LiftLog</div>
-      <div class="card-desc">Track workouts, PRs, cardio &amp; progress for Sky &amp; Meagan.</div>
-    </a>
-
-    <a href="https://mpratt1809.github.io/supplements/" class="card card--supps">
-      <div class="card-icon">💊</div>
-      <div class="card-title">Supplements</div>
-      <div class="card-desc">Daily supplement tracker — log, schedule &amp; stay consistent.</div>
-    </a>
-
-    <a href="https://mpratt1809.github.io/family-calendar/" class="card card--cal">
-      <div class="card-icon">📅</div>
-      <div class="card-title">Calendar</div>
-      <div class="card-desc">Shared calendar to keep the whole household in sync.</div>
-    </a>
-
-    <a href="https://mpratt1809.github.io/cookbook/" class="card card--cook">
-      <div class="card-icon">🍳</div>
-      <div class="card-title">Cookbook</div>
-      <div class="card-desc">Family recipes, photos &amp; memories — all in one place.</div>
-    </a>
-
-    <a href="https://mpratt1809.github.io/shoppinglist/" class="card card--shop">
-      <div class="card-icon">🛒</div>
-      <div class="card-title">Shopping</div>
-      <div class="card-desc">Shared grocery list — pick stores &amp; check off together.</div>
-    </a>
-
-    <a href="https://mpratt1809.github.io/cleaning/" class="card card--clean">
-      <div class="card-icon">🧹</div>
-      <div class="card-title">Cleaning</div>
-      <div class="card-desc">Household cleaning schedule with streaks &amp; task tracking.</div>
-    </a>
-
-  </div>
-
-  <div class="footer">Pratt Family · Built with ❤️</div>
-
-</div>
-
 </body>
 </html>
