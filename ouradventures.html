@@ -9,26 +9,17 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#faf8f4;
-  --bg2:#f2ede4;
-  --card:#ffffff;
-  --border:#e8e0d0;
-  --border2:#d4c9b5;
-  --text:#1a1510;
-  --text2:#3d3528;
-  --muted:#9a8e7a;
-  --faint:#c5b99e;
+  --bg:#0a0a0f;--bg2:#10101a;--bg3:#141420;
+  --card:#181824;--card2:#1e1e2e;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
+  --text:#e8e8ef;--text2:#c0c0d0;--muted:#6a6a82;--faint:#4a4a60;
   --gold:#c9a84c;
   --gold-soft:rgba(201,168,76,0.12);
   --gold-glow:rgba(201,168,76,0.25);
-  --rose:#d4756b;
-  --rose-soft:rgba(212,117,107,0.1);
-  --sage:#6b8f71;
-  --sage-soft:rgba(107,143,113,0.1);
-  --sky-blue:#6b8fb5;
-  --sky-soft:rgba(107,143,181,0.1);
-  --plum:#8b6b9f;
-  --plum-soft:rgba(139,107,159,0.1);
+  --rose:#e07a72;--rose-soft:rgba(224,122,114,0.12);
+  --sage:#5a9e6f;--sage-soft:rgba(90,158,111,0.12);
+  --sky-blue:#5a8fbf;--sky-soft:rgba(90,143,191,0.12);
+  --plum:#9b7abf;--plum-soft:rgba(155,122,191,0.12);
   --radius:16px;
   --font-display:'Playfair Display',Georgia,serif;
   --font-body:'DM Sans',-apple-system,sans-serif;
@@ -219,9 +210,9 @@ label.lbl{display:block;font-size:11px;font-weight:700;color:var(--muted);
 
 /* ── Toast ── */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:var(--text);color:var(--bg);padding:12px 24px;border-radius:14px;
+  background:var(--gold);color:#0a0a0f;padding:12px 24px;border-radius:14px;
   font-size:14px;font-weight:600;z-index:2000;animation:toastIn 0.3s ease;
-  box-shadow:0 8px 30px rgba(0,0,0,0.2);pointer-events:none}
+  box-shadow:0 8px 30px var(--gold-glow);pointer-events:none}
 
 /* ── Priority badge ── */
 .priority-badge{font-size:13px;line-height:1}
