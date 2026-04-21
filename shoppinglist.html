@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping List — PrattHub</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#10101a;--bg3:#141420;
+  --card:#181824;--card2:#1e1e2e;--card-hover:#242438;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
+  --text:#e8e8ef;--text2:#c0c0d0;--text-dim:#6a6a82;--text-faint:#4a4a60;
+  --teal:#2dd4bf;--teal-glow:rgba(45,212,191,0.12);--teal-soft:rgba(45,212,191,0.08);--teal-dark:#0d9488;
+  --danger:#ff5c5c;--green:#4ade80;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --radius:16px;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 10%,rgba(45,212,191,0.03) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 90%,rgba(99,180,255,0.02) 0%,transparent 70%);pointer-events:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)!important;box-shadow:0 0 0 3px var(--teal-soft)}
+::placeholder{color:var(--text-faint)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px) translateX(-50%)}to{opacity:1;transform:translateY(0) translateX(-50%)}}
+@keyframes shimmer{0%{opacity:0.4}50%{opacity:0.7}100%{opacity:0.4}}
+.header{background:linear-gradient(180deg,rgba(45,212,191,0.06) 0%,var(--bg) 100%);padding:20px 24px 16px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:700px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo-mark{width:44px;height:44px;border-radius:14px;background:var(--teal-glow);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid rgba(45,212,191,0.15)}
+.back-link{color:var(--text-dim);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.5px;transition:color 0.2s}
+.back-link:hover{color:var(--teal)}
+.header h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.header .sub{font-size:12px;color:var(--text-dim);margin-top:1px}
+.sync-badge{font-size:11px;color:var(--green);background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);border-radius:20px;padding:3px 10px;font-weight:600}
+.content{max-width:700px;margin:0 auto;padding:20px 24px}
+.view-tabs{display:flex;gap:4px;background:var(--card);border-radius:12px;padding:4px;margin-bottom:20px;border:1px solid var(--border)}
+.tab-btn{flex:1;padding:9px;border-radius:9px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);background:transparent;color:var(--text-dim);transition:all 0.2s}
+.tab-btn.active{background:var(--teal);color:#0a0a0f}
+.add-form{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin-bottom:20px}
+.add-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.add-input{flex:1;min-width:180px;padding:11px 14px;border-radius:12px;border:1px solid var(--border);font-size:14px;color:var(--text);font-family:var(--font);background:var(--bg2)}
+.add-sel{padding:11px 10px;border-radius:12px;border:1px solid var(--border);font-size:13px;color:var(--text);font-family:var(--font);background:var(--bg2);cursor:pointer}
+.add-qty{width:65px;padding:11px 10px;border-radius:12px;border:1px solid var(--border);font-size:13px;color:var(--text);font-family:var(--font);background:var(--bg2);text-align:center}
+.btn{border:none;border-radius:12px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:8px;transition:all 0.25s}
+.btn-primary{background:var(--teal);color:#0a0a0f}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,212,191,0.3)}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:10px}
+.btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border3);color:var(--text)}
+.store-section{margin-bottom:20px;animation:fadeIn 0.3s ease both}
+.store-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--card);border-radius:12px 12px 0 0;border:1px solid var(--border);border-bottom:none}
+.store-name{font-size:14px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px}
+.store-count{font-size:11px;color:var(--text-dim);background:var(--bg2);padding:2px 8px;border-radius:8px;font-weight:600}
+.store-items{background:var(--card);border:1px solid var(--border);border-radius:0 0 12px 12px;overflow:hidden}
+.item-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);transition:opacity 0.2s,background 0.2s;cursor:pointer}
+.item-row:last-child{border-bottom:none}
+.item-row:hover{background:rgba(255,255,255,0.02)}
+.item-row.checked{opacity:0.4}
+.item-check{width:22px;height:22px;min-width:22px;border-radius:7px;border:2px solid var(--border3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal);transition:all 0.2s;background:transparent}
+.item-check.done{background:var(--teal);border-color:var(--teal);color:#0a0a0f}
+.item-body{flex:1;min-width:0}
+.item-name{font-size:14px;font-weight:600;color:var(--text);transition:all 0.2s}
+.item-meta{display:flex;gap:8px;margin-top:3px;flex-wrap:wrap;align-items:center}
+.item-cat{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px}
+.item-qty{font-size:11px;color:var(--text-dim);font-weight:500}
+.item-del{background:none;border:none;cursor:pointer;font-size:14px;opacity:0.3;transition:opacity 0.2s;padding:4px}
+.item-del:hover{opacity:0.8}
+.cat-produce{background:rgba(74,222,128,0.12);color:#4ade80}
+.cat-dairy{background:rgba(96,165,250,0.12);color:#60a5fa}
+.cat-meat{background:rgba(248,113,113,0.12);color:#f87171}
+.cat-bakery{background:rgba(251,191,36,0.12);color:#fbbf24}
+.cat-frozen{background:rgba(147,197,253,0.12);color:#93c5fd}
+.cat-beverages{background:rgba(192,132,252,0.12);color:#c084fc}
+.cat-snacks{background:rgba(251,146,60,0.12);color:#fb923c}
+.cat-household{background:rgba(148,163,184,0.12);color:#94a3b8}
+.cat-personal{background:rgba(244,114,182,0.12);color:#f472b6}
+.cat-other{background:rgba(148,163,184,0.12);color:#94a3b8}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-dim)}
+.empty-state .icon{font-size:48px;margin-bottom:12px}
+.empty-state h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
+.summary-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.summary-card{flex:1;min-width:100px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.summary-num{font-size:24px;font-weight:800;color:var(--teal)}
+.summary-label{font-size:10px;color:var(--text-dim);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.history-item{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;overflow:hidden}
+.history-item:hover{border-color:var(--teal);background:var(--card2)}
+.history-item-top{display:flex;align-items:center;gap:10px;padding:10px 14px 6px}
+.history-item-bottom{display:flex;align-items:center;gap:8px;padding:0 14px 10px}
+.history-name{font-size:13px;font-weight:600;flex:1}
+.history-store{font-size:11px;color:var(--text-dim)}
+.history-add{font-size:11px;color:var(--teal);font-weight:700;margin-left:auto}
+.clear-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s}
+.filter-pill:hover{border-color:var(--border2);color:var(--text)}
+.filter-pill.active{background:var(--teal);color:#0a0a0f;border-color:var(--teal)}
+/* Online / Notes items */
+.item-note{font-size:11px;color:#a78bfa;margin-top:3px;font-style:italic;line-height:1.4}
+.note-field-wrap{display:none;margin-top:8px}
+.note-field-wrap.show{display:block}
+.add-note-input{width:100%;padding:9px 14px;border-radius:12px;border:1px solid rgba(167,139,250,0.3);font-size:13px;color:var(--text);font-family:var(--font);background:rgba(167,139,250,0.06);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--teal);color:#0a0a0f;padding:12px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:2000;box-shadow:0 8px 30px rgba(45,212,191,0.3);animation:toastIn 0.3s ease;pointer-events:none}
+.skeleton{animation:shimmer 1.5s infinite}
+.skel-bar{height:52px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-bottom:8px}
+@media(max-width:600px){
+  .header{padding:14px 16px}.header h1{font-size:18px}.content{padding:16px}
+  .add-row{flex-direction:column}.add-qty,.add-sel{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div id="header-mount"></div>
+<div id="toast-mount"></div>
+<div class="content" id="content-mount">
+  <div style="text-align:center;padding:60px 20px">
+    <div style="font-size:42px;margin-bottom:12px">🛒</div>
+    <p style="color:var(--text-dim)">Loading shopping list…</p>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove, update, push }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD6Qk_T04Wb4dlQ6pjrpS4Us2p1CIqBG2A",
+  authDomain: "pratt-shopping-list.firebaseapp.com",
+  databaseURL: "https://pratt-shopping-list-default-rtdb.firebaseio.com",
+  projectId: "pratt-shopping-list",
+  storageBucket: "pratt-shopping-list.firebasestorage.app",
+  messagingSenderId: "725945016953",
+  appId: "1:725945016953:web:672ad730a4209bb21f2aa8",
+};
+const fbApp = initializeApp(firebaseConfig);
+const db    = getDatabase(fbApp);
+
+const STORES = [
+  {id:"any",label:"Any Store",emoji:"🏪"},{id:"costco",label:"Costco",emoji:"🏬"},
+  {id:"heb",label:"HEB",emoji:"🛒"},{id:"wholefoods",label:"Whole Foods",emoji:"🥑"},
+  {id:"central",label:"Central Market",emoji:"🧀"},
+  {id:"online",label:"Online / Notes",emoji:"🌐"},
+];
+const CATEGORIES = [
+  {id:"produce",label:"Produce",css:"cat-produce"},{id:"dairy",label:"Dairy",css:"cat-dairy"},
+  {id:"meat",label:"Meat & Fish",css:"cat-meat"},{id:"bakery",label:"Bakery",css:"cat-bakery"},
+  {id:"frozen",label:"Frozen",css:"cat-frozen"},{id:"beverages",label:"Beverages",css:"cat-beverages"},
+  {id:"snacks",label:"Snacks",css:"cat-snacks"},{id:"household",label:"Household",css:"cat-household"},
+  {id:"personal",label:"Personal",css:"cat-personal"},{id:"other",label:"Other",css:"cat-other"},
+];
+const STORE_MAP = Object.fromEntries(STORES.map(s=>[s.id,s]));
+const CAT_MAP   = Object.fromEntries(CATEGORIES.map(c=>[c.id,c]));
+const COLORS    = {any:"#94a3b8",costco:"#e53e3e",heb:"#f56565",wholefoods:"#48bb78",central:"#ed8936",online:"#a78bfa"};
+
+let items=[], history=[], synced=false, view="list", filterStore="all", toastTimer=null;
+let fName="", fStore="any", fCat="produce", fQty="", fNote="";
+
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+// ── Toast — only touches its own div, never scrolls page ───────
+function toast(msg){
+  document.getElementById("toast-mount").innerHTML=`<div class="toast">${esc(msg)}</div>`;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{document.getElementById("toast-mount").innerHTML="";},2500);
+}
+
+// ── Firebase listeners ─────────────────────────────────────────
+onValue(ref(db,"shopping/items"),snap=>{
+  const val=snap.val();
+  items=val?Object.entries(val).map(([k,v])=>({...v,id:k})):[];
+  synced=true;
+  renderHeader();
+  renderContent();
+});
+onValue(ref(db,"shopping/history"),snap=>{
+  const val=snap.val();
+  history=val?Object.entries(val).map(([k,v])=>({...v,id:k})).sort((a,b)=>(b.ts||0)-(a.ts||0)):[];
+  if(view==="history") renderContent();
+});
+
+// ── Patch a single item row — NO full re-render, NO scroll jump ─
+function patchItemDOM(id){
+  const item=items.find(i=>i.id===id);
+  const row=document.querySelector(`.item-row[data-id="${id}"]`);
+  if(!item||!row) return;
+  row.classList.toggle("checked",!!item.done);
+  const check=row.querySelector(".item-check");
+  if(check){check.classList.toggle("done",!!item.done);check.textContent=item.done?"✓":"";}
+  const name=row.querySelector(".item-name");
+  if(name){name.style.textDecoration=item.done?"line-through":"";name.style.color=item.done?"var(--text-dim)":"";}
+}
+
+// ── Actions ────────────────────────────────────────────────────
+function addItem(){
+  if(!fName.trim()) return;
+  const r=push(ref(db,"shopping/items"));
+  set(r,{name:fName.trim(),store:fStore,category:fCat,qty:fQty||"",note:fNote||"",done:false,ts:Date.now()});
+  addToHistory(fName.trim(),fStore,fCat,fQty);
+  fName=""; fQty=""; fNote="";
+  const ni=document.getElementById("addName");
+  const qi=document.getElementById("addQty");
+  const noi=document.getElementById("addNote");
+  if(ni){ni.value="";ni.focus();}
+  if(qi) qi.value="";
+  if(noi) noi.value="";
+  // Hide note field after add if online
+  updateNoteFieldVisibility();
+  toast("Added to list!");
+}
+
+function addToHistory(name,store,category,qty){
+  const ex=history.find(h=>h.name.toLowerCase()===name.toLowerCase());
+  if(ex) update(ref(db,`shopping/history/${ex.id}`),{store,category,qty,ts:Date.now()});
+  else   {const r=push(ref(db,"shopping/history"));set(r,{name,store,category,qty,ts:Date.now()});}
+}
+
+function toggleItem(id){
+  const item=items.find(i=>i.id===id);
+  if(!item) return;
+  item.done=!item.done;
+  patchItemDOM(id);           // instant visual — no re-render
+  renderHeader();             // update subtitle count
+  update(ref(db,`shopping/items/${id}`),{done:item.done});
+}
+
+function deleteItem(id){
+  remove(ref(db,`shopping/items/${id}`));
+  document.querySelector(`.item-row[data-id="${id}"]`)?.remove();
+  document.querySelectorAll(".store-section").forEach(sec=>{
+    if(!sec.querySelector(".item-row")) sec.remove();
+  });
+  renderHeader();
+}
+
+function clearDone(){
+  const done=items.filter(i=>i.done);
+  done.forEach(i=>remove(ref(db,`shopping/items/${i.id}`)));
+  if(done.length) toast(`Cleared ${done.length} item${done.length>1?"s":""}`);
+}
+
+function reAddFromHistory(h){
+  const r=push(ref(db,"shopping/items"));
+  set(r,{name:h.name,store:h.store,category:h.category,qty:h.qty||"",done:false,ts:Date.now()});
+  toast(`Re-added "${h.name}"!`);
+}
+
+function deleteHistory(id){remove(ref(db,`shopping/history/${id}`));}
+
+// ── Header (sticky — separate from scroll content) ─────────────
+function renderHeader(){
+  if(!synced) return;
+  const total=items.filter(i=>!i.done).length;
+  const done=items.filter(i=>i.done).length;
+  document.getElementById("header-mount").innerHTML=`
+    <div class="header"><div class="header-inner">
+      <div class="header-left">
+        <div class="logo-mark">🛒</div>
+        <div>
+          <a href="./index.html" class="back-link">← PRATTHUB</a>
+          <h1>Shopping List</h1>
+          <p class="sub">${total} item${total!==1?"s":""} to get${done?` · ${done} done`:""}</p>
+        </div>
+      </div>
+      <span class="sync-badge">🔴 Live</span>
+    </div></div>`;
+}
+
+// ── Full content render (only on load, view switch, or add) ────
+function renderContent(){
+  if(!synced){
+    document.getElementById("content-mount").innerHTML=
+      `<div class="skeleton"><div class="skel-bar"></div><div class="skel-bar"></div><div class="skel-bar"></div></div>`;
+    return;
+  }
+
+  const activeItems=items.filter(i=>!i.done);
+  const doneItems=items.filter(i=>i.done);
+  const filtered=filterStore==="all"?activeItems:activeItems.filter(i=>i.store===filterStore);
+  const grouped={};
+  STORES.forEach(s=>{grouped[s.id]=[];});
+  filtered.forEach(i=>{(grouped[i.store]||grouped["any"]).push(i);});
+  Object.values(grouped).forEach(arr=>arr.sort((a,b)=>(a.category||"").localeCompare(b.category||"")));
+
+  const activeStores=STORES.filter(s=>items.some(i=>!i.done&&i.store===s.id));
+  const currentNames=new Set(items.map(i=>i.name.toLowerCase()));
+  const availHistory=history.filter(h=>!currentNames.has(h.name.toLowerCase())).slice(0,30);
+
+  const tabs=`<div class="view-tabs">
+    <button class="tab-btn${view==="list"?" active":""}" data-view="list">🛒 Shopping List</button>
+    <button class="tab-btn${view==="history"?" active":""}" data-view="history">🕐 Quick Re-Add</button>
+  </div>`;
+
+  if(view==="history"){
+    document.getElementById("content-mount").innerHTML=tabs+renderHistoryHTML(availHistory);
+    bindContent(); return;
+  }
+
+  const storeBreak={};
+  activeItems.forEach(i=>{storeBreak[i.store]=(storeBreak[i.store]||0)+1;});
+
+  const summary=`<div class="summary-bar">
+    <div class="summary-card"><div class="summary-num">${activeItems.length}</div><div class="summary-label">To Get</div></div>
+    <div class="summary-card"><div class="summary-num">${doneItems.length}</div><div class="summary-label">Done</div></div>
+    <div class="summary-card"><div class="summary-num">${Object.keys(storeBreak).length}</div><div class="summary-label">Stores</div></div>
+  </div>`;
+
+  const form=`<div class="add-form">
+    <div class="add-row">
+      <input class="add-input" id="addName" placeholder="Add an item…" value="${esc(fName)}" autocomplete="off"/>
+      <input class="add-qty"   id="addQty"  placeholder="Qty"          value="${esc(fQty)}" inputmode="numeric"/>
+      <button class="btn btn-primary" id="btnAdd">+ Add</button>
+    </div>
+    <div class="add-row">
+      <select class="add-sel" id="addStore">${STORES.map(s=>`<option value="${s.id}"${fStore===s.id?" selected":""}>${s.emoji} ${s.label}</option>`).join("")}</select>
+      <select class="add-sel" id="addCat">${CATEGORIES.map(c=>`<option value="${c.id}"${fCat===c.id?" selected":""}>${c.label}</option>`).join("")}</select>
+    </div>
+    <div class="note-field-wrap${fStore==="online"?" show":""}" id="noteFieldWrap">
+      <input class="add-note-input" id="addNote" placeholder="📝 Note or reminder (e.g. check Amazon, size L, subscribe & save…)" value="${esc(fNote)}"/>
+    </div>
+  </div>`;
+
+  const filters=activeStores.length>1?`<div class="filter-row">
+    <button class="filter-pill${filterStore==="all"?" active":""}" data-filter="all">All Stores</button>
+    ${activeStores.map(s=>`<button class="filter-pill${filterStore===s.id?" active":""}" data-filter="${s.id}">${s.emoji} ${s.label}</button>`).join("")}
+  </div>`:"";
+
+  const clearRow=doneItems.length>0?`<div class="clear-row">
+    <span style="font-size:12px;color:var(--text-dim)">${doneItems.length} checked off</span>
+    <button class="btn btn-ghost btn-sm" id="btnClear">🗑 Clear Done</button>
+  </div>`:"";
+
+  const storeOrder=STORES.filter(s=>grouped[s.id]&&grouped[s.id].length>0);
+  let groupsHtml="";
+  if(storeOrder.length===0&&doneItems.length===0){
+    groupsHtml=`<div class="empty-state"><div class="icon">🛒</div><h3>List is empty</h3><p>Add items above!</p></div>`;
+  } else {
+    storeOrder.forEach(store=>{
+      const si=grouped[store.id];
+      if(!si.length) return;
+      groupsHtml+=`<div class="store-section">
+        <div class="store-header" style="border-left:3px solid ${COLORS[store.id]||"#94a3b8"}">
+          <span class="store-name">${store.emoji} ${store.label} <span class="store-count">${si.length}</span></span>
+        </div>
+        <div class="store-items">${si.map(itemRowHTML).join("")}</div>
+      </div>`;
+    });
+    if(doneItems.length>0&&filterStore==="all"){
+      groupsHtml+=`<div class="store-section" style="opacity:0.5">
+        <div class="store-header" style="border-left:3px solid #333">
+          <span class="store-name">✅ Done <span class="store-count">${doneItems.length}</span></span>
+        </div>
+        <div class="store-items">${doneItems.map(itemRowHTML).join("")}</div>
+      </div>`;
+    }
+  }
+
+  document.getElementById("content-mount").innerHTML=tabs+summary+form+filters+clearRow+groupsHtml;
+  bindContent();
+}
+
+function renderHistoryHTML(availHistory){
+  if(!availHistory.length) return`<div class="empty-state"><div class="icon">🕐</div><h3>No history yet</h3><p>Items you add will show up here.</p></div>`;
+  return`<p style="font-size:13px;color:var(--text-dim);margin-bottom:16px">Tap any item to add it back to your list.</p>
+    ${availHistory.map(h=>{
+      const store=STORE_MAP[h.store]||STORE_MAP["any"],cat=CAT_MAP[h.category]||CAT_MAP["other"];
+      return`<div class="history-item" data-hid="${h.id}">
+        <div class="history-item-top">
+          <span class="history-name">${esc(h.name)}${h.qty?` <span style="color:var(--text-dim)">(${esc(h.qty)})</span>`:""}</span>
+          <button class="item-del" data-hdel="${h.id}" style="flex-shrink:0;opacity:1;font-size:14px;padding:4px 8px;background:rgba(255,92,92,0.15);border:1px solid rgba(255,92,92,0.3);border-radius:8px;color:#ff5c5c;margin-left:6px">🗑</button>
+        </div>
+        <div class="history-item-bottom">
+          <span class="item-cat ${cat.css}" style="font-size:10px;padding:2px 7px;border-radius:6px">${cat.label}</span>
+          <span class="history-store">${store.emoji} ${store.label}</span>
+        </div>
+      </div>`;
+    }).join("")}`;
+}
+
+function itemRowHTML(item){
+  const cat=CAT_MAP[item.category]||CAT_MAP["other"];
+  const isOnline=item.store==="online";
+  return`<div class="item-row${item.done?" checked":""}" data-id="${item.id}">
+    <div class="item-check${item.done?" done":""}" data-toggle="${item.id}">${item.done?"✓":""}</div>
+    <div class="item-body">
+      <div class="item-name"${item.done?' style="text-decoration:line-through;color:var(--text-dim)"':''}>${esc(item.name)}</div>
+      <div class="item-meta">
+        <span class="item-cat ${cat.css}">${cat.label}</span>
+        ${item.qty?`<span class="item-qty">Qty: ${esc(item.qty)}</span>`:""}
+      </div>
+      ${item.note?`<div class="item-note">📝 ${esc(item.note)}</div>`:""}
+    </div>
+    <button class="item-del" data-del="${item.id}">🗑</button>
+  </div>`;
+}
+
+function updateNoteFieldVisibility(){
+  const wrap=document.getElementById("noteFieldWrap");
+  if(wrap) wrap.classList.toggle("show", fStore==="online");
+}
+
+function bindContent(){
+  document.querySelectorAll(".tab-btn[data-view]").forEach(b=>b.addEventListener("click",()=>{view=b.dataset.view;renderContent();}));
+
+  const ni=document.getElementById("addName");
+  if(ni){
+    ni.addEventListener("input",e=>{fName=e.target.value;});
+    ni.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addItem();}});
+  }
+  document.getElementById("addQty")?.addEventListener("input",e=>{fQty=e.target.value;});
+  document.getElementById("addNote")?.addEventListener("input",e=>{fNote=e.target.value;});
+  document.getElementById("addStore")?.addEventListener("change",e=>{fStore=e.target.value;updateNoteFieldVisibility();});
+  document.getElementById("addCat")?.addEventListener("change",e=>{fCat=e.target.value;});
+  document.getElementById("btnAdd")?.addEventListener("click",addItem);
+  document.getElementById("btnClear")?.addEventListener("click",clearDone);
+
+  document.querySelectorAll(".filter-pill").forEach(b=>b.addEventListener("click",()=>{filterStore=b.dataset.filter;renderContent();}));
+
+  // Toggle patches DOM only — no re-render, no scroll jump
+  document.querySelectorAll("[data-toggle]").forEach(el=>el.addEventListener("click",e=>{e.stopPropagation();toggleItem(el.dataset.toggle);}));
+  document.querySelectorAll(".item-row[data-id]").forEach(el=>el.addEventListener("click",e=>{if(e.target.closest(".item-del"))return;toggleItem(el.dataset.id);}));
+
+  // Delete removes row from DOM only — no re-render
+  document.querySelectorAll("[data-del]").forEach(el=>el.addEventListener("click",e=>{e.stopPropagation();deleteItem(el.dataset.del);}));
+
+  document.querySelectorAll(".history-item[data-hid]").forEach(el=>el.addEventListener("click",e=>{
+    if(e.target.closest("[data-hdel]"))return;
+    const h=history.find(x=>x.id===el.dataset.hid);if(h)reAddFromHistory(h);
+  }));
+  document.querySelectorAll("[data-hdel]").forEach(el=>el.addEventListener("click",e=>{e.stopPropagation();deleteHistory(el.dataset.hdel);}));
+}
+
+renderHeader();
+renderContent();
+</script>
+</body>
+</html>

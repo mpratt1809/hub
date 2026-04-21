@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Our Adventures 🗺️</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#faf8f4;
+  --bg2:#f2ede4;
+  --card:#ffffff;
+  --border:#e8e0d0;
+  --border2:#d4c9b5;
+  --text:#1a1510;
+  --text2:#3d3528;
+  --muted:#9a8e7a;
+  --faint:#c5b99e;
+  --gold:#c9a84c;
+  --gold-soft:rgba(201,168,76,0.12);
+  --gold-glow:rgba(201,168,76,0.25);
+  --rose:#d4756b;
+  --rose-soft:rgba(212,117,107,0.1);
+  --sage:#6b8f71;
+  --sage-soft:rgba(107,143,113,0.1);
+  --sky-blue:#6b8fb5;
+  --sky-soft:rgba(107,143,181,0.1);
+  --plum:#8b6b9f;
+  --plum-soft:rgba(139,107,159,0.1);
+  --radius:16px;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'DM Sans',-apple-system,sans-serif;
+}
+
+/* ── Base ── */
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 80% 40% at 10% 0%,rgba(201,168,76,0.08) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 50% at 90% 100%,rgba(212,117,107,0.06) 0%,transparent 60%);
+  pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!important;box-shadow:0 0 0 3px var(--gold-soft)}
+::placeholder{color:var(--faint)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px) translateX(-50%)}to{opacity:1;transform:translateY(0) translateX(-50%)}}
+
+/* ── Header ── */
+.header{background:linear-gradient(180deg,rgba(201,168,76,0.08) 0%,transparent 100%);
+  padding:20px 24px 16px;position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border)}
+.header-inner{max-width:780px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:14px;background:var(--gold-soft);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  border:1px solid var(--gold-glow);flex-shrink:0}
+.back-link{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;
+  letter-spacing:0.8px;text-transform:uppercase;transition:color 0.2s}
+.back-link:hover{color:var(--gold)}
+.header-title{font-family:var(--font-display);font-size:22px;font-weight:700;
+  color:var(--text);letter-spacing:-0.3px;line-height:1.1}
+.header-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.btn-add-header{background:var(--gold);color:#fff;border:none;border-radius:12px;
+  padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:var(--font-body);display:flex;align-items:center;gap:6px;
+  transition:all 0.2s;white-space:nowrap}
+.btn-add-header:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 6px 20px var(--gold-glow)}
+
+/* ── Content ── */
+.content{max-width:780px;margin:0 auto;padding:20px 24px 60px;position:relative;z-index:1}
+
+/* ── View Tabs ── */
+.view-tabs{display:flex;gap:4px;background:var(--bg2);border-radius:12px;padding:4px;
+  margin-bottom:24px;border:1px solid var(--border)}
+.view-tab{flex:1;padding:9px;border-radius:9px;border:none;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:var(--font-body);background:transparent;color:var(--muted);
+  transition:all 0.2s}
+.view-tab.active{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+/* ── Category Tiles ── */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:500px){.cat-grid{grid-template-columns:repeat(2,1fr)}}
+.cat-tile{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;
+  animation:fadeUp 0.4s ease both}
+.cat-tile:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+.cat-tile.active{border-width:2px}
+.cat-tile-icon{font-size:26px;margin-bottom:6px}
+.cat-tile-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.cat-tile-count{font-size:10px;color:var(--muted);margin-top:2px}
+
+.cat-tv    {border-color:rgba(107,143,181,0.4)}.cat-tv.active    {background:var(--sky-soft);border-color:var(--sky-blue)}
+.cat-movies{border-color:rgba(212,117,107,0.4)}.cat-movies.active{background:var(--rose-soft);border-color:var(--rose)}
+.cat-music {border-color:rgba(201,168,76,0.4)} .cat-music.active {background:var(--gold-soft);border-color:var(--gold)}
+.cat-food  {border-color:rgba(107,143,113,0.4)}.cat-food.active  {background:var(--sage-soft);border-color:var(--sage)}
+.cat-places{border-color:rgba(139,107,159,0.4)}.cat-places.active{background:var(--plum-soft);border-color:var(--plum)}
+
+/* ── Search ── */
+.search-wrap{display:flex;align-items:center;gap:10px;background:var(--card);
+  border-radius:12px;padding:11px 16px;border:1.5px solid var(--border);margin-bottom:20px}
+.search-icon{color:var(--faint);font-size:15px;flex-shrink:0}
+.search-input{flex:1;border:none;background:transparent;font-size:14px;color:var(--text);
+  font-family:var(--font-body)}
+.search-clear{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px}
+
+/* ── Items List ── */
+.items-list{display:flex;flex-direction:column;gap:10px}
+.item-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:all 0.2s;animation:fadeUp 0.35s ease both}
+.item-card:hover{box-shadow:0 6px 24px rgba(0,0,0,0.07);transform:translateY(-1px)}
+.item-card-inner{padding:16px 18px;cursor:pointer}
+.item-top{display:flex;align-items:flex-start;gap:12px}
+.item-cat-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.item-body{flex:1;min-width:0}
+.item-title{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--text);
+  letter-spacing:-0.2px;line-height:1.3}
+.item-subtitle{font-size:12px;color:var(--muted);margin-top:3px;display:flex;
+  flex-wrap:wrap;gap:6px;align-items:center}
+.item-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.item-notes{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;
+  border-top:1px solid var(--border);padding-top:8px}
+.item-actions{display:flex;gap:6px;padding:10px 18px 14px;flex-wrap:wrap}
+.item-btn{padding:7px 14px;border-radius:9px;border:none;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:var(--font-body);transition:all 0.15s}
+.btn-done{background:var(--sage);color:#fff}
+.btn-done:hover{filter:brightness(1.08)}
+.btn-edit{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+.btn-edit:hover{border-color:var(--border2)}
+.btn-delete{background:var(--rose-soft);color:var(--rose);border:1px solid rgba(212,117,107,0.2)}
+.btn-delete:hover{background:rgba(212,117,107,0.2)}
+.item-added-by{font-size:10px;color:var(--faint);margin-left:auto;flex-shrink:0;
+  align-self:flex-start;padding-top:2px}
+
+/* ── Priority star ── */
+.priority-star{font-size:14px;cursor:pointer;flex-shrink:0;line-height:1;padding:2px}
+
+/* ── Memories Tab ── */
+.memories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.memory-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:all 0.25s;animation:scaleIn 0.35s ease both;cursor:pointer}
+.memory-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,0.1)}
+.memory-photo{height:160px;overflow:hidden;background:var(--bg2);position:relative;display:flex;align-items:center;justify-content:center}
+.memory-photo img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s}
+.memory-card:hover .memory-photo img{transform:scale(1.04)}
+.memory-photo-placeholder{font-size:40px;opacity:0.4}
+.memory-photo-link{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.55);
+  color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;
+  text-decoration:none;backdrop-filter:blur(4px)}
+.memory-body{padding:14px 16px}
+.memory-cat{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:4px}
+.memory-title{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text);
+  margin-bottom:4px;line-height:1.3}
+.memory-date{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.memory-note{font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5;
+  font-style:italic}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:60px 20px;animation:fadeUp 0.4s ease both}
+.empty-icon{font-size:52px;margin-bottom:14px}
+.empty-title{font-family:var(--font-display);font-size:22px;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,21,16,0.5);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:flex-end;justify-content:center;z-index:1000;padding:16px}
+@media(min-width:600px){.modal-overlay{align-items:center}}
+.modal{background:var(--card);border-radius:20px 20px 20px 20px;padding:24px;
+  width:100%;max-width:540px;max-height:90vh;overflow-y:auto;
+  box-shadow:0 24px 60px rgba(0,0,0,0.2);animation:scaleIn 0.25s ease}
+@media(max-width:599px){.modal{border-radius:20px 20px 0 0;padding-bottom:32px}}
+.modal-title{font-family:var(--font-display);font-size:22px;font-weight:700;
+  color:var(--text);margin-bottom:20px;letter-spacing:-0.3px}
+.form-group{margin-bottom:16px}
+.form-row{display:flex;gap:12px;flex-wrap:wrap}
+.form-row .form-group{flex:1;min-width:130px}
+label.lbl{display:block;font-size:11px;font-weight:700;color:var(--muted);
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:0.8px}
+.inp,.sel,.ta{width:100%;padding:10px 14px;border-radius:11px;border:1.5px solid var(--border);
+  font-size:14px;color:var(--text);font-family:var(--font-body);background:var(--bg);
+  transition:border-color 0.2s}
+.ta{resize:vertical;min-height:72px}
+.sel{cursor:pointer;-webkit-appearance:auto;appearance:auto}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn-primary{background:var(--gold);color:#fff;border:none;border-radius:11px;
+  padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);
+  transition:all 0.2s}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg2);color:var(--text2);border:1.5px solid var(--border);
+  border-radius:11px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;
+  font-family:var(--font-body);transition:all 0.2s}
+.btn-secondary:hover{border-color:var(--border2)}
+
+/* ── Done modal extra fields ── */
+.done-photo-preview{width:100%;height:140px;border-radius:11px;object-fit:cover;margin-top:8px;display:none}
+.photo-url-note{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+/* ── Priority toggle ── */
+.priority-toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);
+  cursor:pointer;user-select:none}
+.priority-toggle input{width:16px;height:16px;cursor:pointer;accent-color:var(--gold)}
+
+/* ── Category section headers ── */
+.section-hdr{font-family:var(--font-display);font-size:18px;font-weight:700;
+  color:var(--text);margin:24px 0 12px;padding-bottom:8px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;gap:10px}
+.section-count{font-size:12px;color:var(--muted);font-family:var(--font-body);font-weight:500}
+
+/* ── Tag colors ── */
+.tag-tv    {background:var(--sky-soft);color:var(--sky-blue)}
+.tag-movies{background:var(--rose-soft);color:var(--rose)}
+.tag-music {background:var(--gold-soft);color:var(--gold)}
+.tag-food  {background:var(--sage-soft);color:var(--sage)}
+.tag-places{background:var(--plum-soft);color:var(--plum)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--text);color:var(--bg);padding:12px 24px;border-radius:14px;
+  font-size:14px;font-weight:600;z-index:2000;animation:toastIn 0.3s ease;
+  box-shadow:0 8px 30px rgba(0,0,0,0.2);pointer-events:none}
+
+/* ── Priority badge ── */
+.priority-badge{font-size:13px;line-height:1}
+
+/* ── Concert date badge ── */
+.concert-date-badge{background:var(--gold-soft);color:var(--gold);font-size:10px;
+  font-weight:700;padding:2px 8px;border-radius:6px;border:1px solid var(--gold-glow)}
+
+/* ── Link ── */
+.item-link{font-size:11px;color:var(--gold);text-decoration:none;font-weight:600;
+  display:inline-flex;align-items:center;gap:3px}
+.item-link:hover{text-decoration:underline}
+
+/* ── Sync badge ── */
+.sync-badge{font-size:11px;color:var(--sage);background:var(--sage-soft);
+  border:1px solid rgba(107,143,113,0.3);border-radius:20px;padding:3px 10px;font-weight:600}
+
+@media(max-width:600px){
+  .header{padding:14px 16px}.content{padding:16px 16px 60px}
+  .cat-grid{grid-template-columns:repeat(2,1fr)}
+  .memories-grid{grid-template-columns:1fr 1fr}
+  .modal{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<div id="header-mount"></div>
+<div id="toast-mount"></div>
+
+<div class="content" id="main-content">
+  <div style="text-align:center;padding:60px 20px">
+    <div style="font-size:48px;margin-bottom:12px">🗺️</div>
+    <p style="color:var(--muted);font-size:14px">Loading adventures…</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" style="display:none" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove, push, update }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD6Qk_T04Wb4dlQ6pjrpS4Us2p1CIqBG2A",
+  authDomain: "pratt-shopping-list.firebaseapp.com",
+  databaseURL: "https://pratt-shopping-list-default-rtdb.firebaseio.com",
+  projectId: "pratt-shopping-list",
+  storageBucket: "pratt-shopping-list.firebasestorage.app",
+  messagingSenderId: "725945016953",
+  appId: "1:725945016953:web:672ad730a4209bb21f2aa8",
+};
+const fbApp = initializeApp(firebaseConfig);
+const db    = getDatabase(fbApp);
+
+// ── Constants ────────────────────────────────────────────────
+const CATS = [
+  { id:"tv",     label:"TV Shows",   icon:"📺", tagClass:"tag-tv",     tileClass:"cat-tv"     },
+  { id:"movies", label:"Movies",     icon:"🎬", tagClass:"tag-movies", tileClass:"cat-movies"  },
+  { id:"music",  label:"Concerts",   icon:"🎵", tagClass:"tag-music",  tileClass:"cat-music"   },
+  { id:"food",   label:"Restaurants",icon:"🍽️", tagClass:"tag-food",   tileClass:"cat-food"    },
+  { id:"places", label:"Places",     icon:"📍", tagClass:"tag-places", tileClass:"cat-places"  },
+];
+const CAT_MAP = Object.fromEntries(CATS.map(c=>[c.id,c]));
+const STREAMING = ["Netflix","HBO Max","Hulu","Prime","Peacock","Theatre","Other"];
+const PRICE_RANGE = ["$","$$","$$$","$$$$"];
+const PLACE_TYPES = ["Outdoor","Cultural","Experience","Sport","Travel","Other"];
+const ADDED_BY = ["Sky","Meagan"];
+
+// ── State ─────────────────────────────────────────────────────
+let items = [], synced = false, view = "list", filterCat = "all", search = "", toastTimer = null;
+let editingId = null;
+
+function uid() { return Math.random().toString(36).slice(2,10); }
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}); }catch{ return iso; }}
+
+// ── Firebase ──────────────────────────────────────────────────
+onValue(ref(db,"adventures/items"), snap => {
+  const val = snap.val();
+  items = val ? Object.entries(val).map(([k,v])=>({...v,id:k})) : [];
+  synced = true;
+  render();
+});
+
+function saveItem(item) {
+  set(ref(db,`adventures/items/${item.id}`), item)
+    .catch(e => toast("⚠️ Save failed: " + e.message));
+}
+function deleteItem(id) { remove(ref(db,`adventures/items/${id}`)); }
+
+// ── Toast ─────────────────────────────────────────────────────
+function toast(msg) {
+  document.getElementById("toast-mount").innerHTML = `<div class="toast">${esc(msg)}</div>`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ document.getElementById("toast-mount").innerHTML = ""; }, 2500);
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+function openModal(html) {
+  document.getElementById("modal-content").innerHTML = html;
+  document.getElementById("modal-overlay").style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+window.closeModal = function() {
+  document.getElementById("modal-overlay").style.display = "none";
+  document.body.style.overflow = "";
+  editingId = null;
+};
+window.handleOverlayClick = function(e) {
+  if (e.target.id === "modal-overlay") closeModal();
+};
+
+// ── Header ────────────────────────────────────────────────────
+function renderHeader() {
+  const total = items.filter(i=>!i.done).length;
+  document.getElementById("header-mount").innerHTML = `
+    <div class="header"><div class="header-inner">
+      <div class="header-left">
+        <div class="logo-mark">🗺️</div>
+        <div>
+          <a href="./index.html" class="back-link">← PrattHub</a>
+          <div class="header-title">Our Adventures</div>
+          <div class="header-sub">${total} thing${total!==1?"s":""} to do together</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="sync-badge">🔴 Live</span>
+        <button class="btn-add-header" onclick="openAddModal()">+ Add</button>
+      </div>
+    </div></div>`;
+}
+
+// ── Main render ───────────────────────────────────────────────
+function render() {
+  if (!synced) return;
+  renderHeader();
+
+  const activeItems = items.filter(i => !i.done);
+  const doneItems   = items.filter(i =>  i.done);
+
+  const filtered = activeItems.filter(i => {
+    const matchCat    = filterCat === "all" || i.category === filterCat;
+    const matchSearch = !search || i.title.toLowerCase().includes(search.toLowerCase()) || (i.notes||"").toLowerCase().includes(search.toLowerCase());
+    return matchCat && matchSearch;
+  });
+
+  // Sort: priority first, then by ts
+  filtered.sort((a,b) => (b.priority?1:0) - (a.priority?1:0) || (b.ts||0) - (a.ts||0));
+
+  const tabs = `<div class="view-tabs">
+    <button class="view-tab${view==="list"?" active":""}" onclick="setView('list')">✨ Adventures</button>
+    <button class="view-tab${view==="memories"?" active":""}" onclick="setView('memories')">📸 Memories (${doneItems.length})</button>
+  </div>`;
+
+  if (view === "memories") {
+    document.getElementById("main-content").innerHTML = tabs + renderMemories(doneItems);
+    return;
+  }
+
+  // Category tiles
+  const catTiles = `<div class="cat-grid">
+    <div class="cat-tile${filterCat==="all"?" active cat-music":""}" onclick="setCat('all')" style="${filterCat==="all"?"border-color:var(--gold);background:var(--gold-soft)":""}">
+      <div class="cat-tile-icon">🗺️</div>
+      <div class="cat-tile-label" style="color:${filterCat==="all"?"var(--gold)":"var(--muted)"}">All</div>
+      <div class="cat-tile-count">${activeItems.length} total</div>
+    </div>
+    ${CATS.map(c=>{
+      const count = activeItems.filter(i=>i.category===c.id).length;
+      const isActive = filterCat === c.id;
+      return `<div class="cat-tile ${c.tileClass}${isActive?" active":""}" onclick="setCat('${c.id}')">
+        <div class="cat-tile-icon">${c.icon}</div>
+        <div class="cat-tile-label" style="color:var(--${isActive?c.id==="tv"?"sky-blue":c.id==="movies"?"rose":c.id==="music"?"gold":c.id==="food"?"sage":"plum":"muted"})">${c.label}</div>
+        <div class="cat-tile-count">${count} item${count!==1?"s":""}</div>
+      </div>`;
+    }).join("")}
+  </div>`;
+
+  // Search
+  const searchBar = `<div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" placeholder="Search adventures…" value="${esc(search)}" autocomplete="off"/>
+    ${search?`<button class="search-clear" onclick="clearSearch()">✕</button>`:""}
+  </div>`;
+
+  // Items grouped by category or flat
+  let listHTML = "";
+  if (!filtered.length) {
+    listHTML = `<div class="empty-state">
+      <div class="empty-icon">${filterCat==="all"?"🗺️":CAT_MAP[filterCat]?.icon||"✨"}</div>
+      <div class="empty-title">${search?"No results found":"Nothing here yet"}</div>
+      <div class="empty-sub">${search?`No adventures match "${search}"`:"Tap + Add to start your list!"}</div>
+    </div>`;
+  } else if (filterCat === "all" && !search) {
+    // Group by category
+    CATS.forEach(c => {
+      const catItems = filtered.filter(i=>i.category===c.id);
+      if (!catItems.length) return;
+      listHTML += `<div class="section-hdr">${c.icon} ${c.label} <span class="section-count">${catItems.length}</span></div>
+        <div class="items-list">${catItems.map(itemCardHTML).join("")}</div>`;
+    });
+  } else {
+    listHTML = `<div class="items-list">${filtered.map(itemCardHTML).join("")}</div>`;
+  }
+
+  document.getElementById("main-content").innerHTML = tabs + catTiles + searchBar + listHTML;
+
+  // Bind search
+  document.getElementById("searchInput")?.addEventListener("input", e => {
+    search = e.target.value;
+    render();
+  });
+}
+
+// ── Item Card HTML ────────────────────────────────────────────
+function itemCardHTML(item) {
+  const cat = CAT_MAP[item.category] || CATS[0];
+  const meta = buildMeta(item);
+  return `<div class="item-card" style="animation-delay:${Math.random()*0.15}s">
+    <div class="item-card-inner">
+      <div class="item-top">
+        <div class="item-cat-icon">${cat.icon}</div>
+        <div class="item-body">
+          <div class="item-title">${esc(item.title)} ${item.priority?`<span class="priority-badge" title="High priority">⭐</span>`:""}</div>
+          <div class="item-subtitle">${meta}</div>
+          ${item.notes?`<div class="item-notes">${esc(item.notes)}</div>`:""}
+          ${item.ticketLink?`<a class="item-link" href="${esc(item.ticketLink)}" target="_blank" rel="noopener">🎟 Tickets ↗</a>`:""}
+          ${item.mapLink?`<a class="item-link" href="${esc(item.mapLink)}" target="_blank" rel="noopener">📍 Maps ↗</a>`:""}
+          ${item.trailerLink?`<a class="item-link" href="${esc(item.trailerLink)}" target="_blank" rel="noopener">▶ Trailer ↗</a>`:""}
+        </div>
+        <div class="item-added-by">${item.addedBy?`by ${esc(item.addedBy)}`:""}</div>
+      </div>
+    </div>
+    <div class="item-actions">
+      <button class="item-btn btn-done"   onclick="openDoneModal('${item.id}')">✅ Mark Done</button>
+      <button class="item-btn btn-edit"   onclick="openEditModal('${item.id}')">✏️ Edit</button>
+      <button class="item-btn btn-delete" onclick="confirmDelete('${item.id}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+function buildMeta(item) {
+  const parts = [];
+  const cat = CAT_MAP[item.category];
+  if (cat) parts.push(`<span class="item-tag ${cat.tagClass}">${cat.label}</span>`);
+  if (item.streaming)  parts.push(`<span style="font-size:12px;color:var(--muted)">${esc(item.streaming)}</span>`);
+  if (item.venue)      parts.push(`<span style="font-size:12px;color:var(--muted)">📍 ${esc(item.venue)}</span>`);
+  if (item.concertDate)parts.push(`<span class="concert-date-badge">${fmtDate(item.concertDate)}</span>`);
+  if (item.cuisine)    parts.push(`<span style="font-size:12px;color:var(--muted)">${esc(item.cuisine)}</span>`);
+  if (item.location)   parts.push(`<span style="font-size:12px;color:var(--muted)">📍 ${esc(item.location)}</span>`);
+  if (item.priceRange) parts.push(`<span style="font-size:12px;color:var(--sage)">${esc(item.priceRange)}</span>`);
+  if (item.placeType)  parts.push(`<span style="font-size:12px;color:var(--muted)">${esc(item.placeType)}</span>`);
+  return parts.join("");
+}
+
+// ── Memories ─────────────────────────────────────────────────
+function renderMemories(doneItems) {
+  if (!doneItems.length) return `<div class="empty-state">
+    <div class="empty-icon">📸</div>
+    <div class="empty-title">No memories yet</div>
+    <div class="empty-sub">Mark adventures as done to build your scrapbook here.</div>
+  </div>`;
+
+  const sorted = [...doneItems].sort((a,b)=>(b.doneDate||"").localeCompare(a.doneDate||""));
+  return `<div class="memories-grid">${sorted.map(item=>{
+    const cat = CAT_MAP[item.category]||CATS[0];
+    return `<div class="memory-card" onclick="openMemoryDetail('${item.id}')">
+      <div class="memory-photo">
+        ${item.photoUrl
+          ? `<img src="${esc(item.photoUrl)}" alt="${esc(item.title)}" onerror="this.style.display='none'">`
+          : `<div class="memory-photo-placeholder">${cat.icon}</div>`}
+        ${item.albumUrl?`<a class="memory-photo-link" href="${esc(item.albumUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📸 Album ↗</a>`:""}
+      </div>
+      <div class="memory-body">
+        <div class="memory-cat">${cat.label}</div>
+        <div class="memory-title">${esc(item.title)}</div>
+        <div class="memory-date">❤️ ${item.doneDate?fmtDate(item.doneDate):"Done"}</div>
+        ${item.memoryNote?`<div class="memory-note">"${esc(item.memoryNote)}"</div>`:""}
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+window.openMemoryDetail = function(id) {
+  const item = items.find(i=>i.id===id); if(!item) return;
+  const cat = CAT_MAP[item.category]||CATS[0];
+  openModal(`
+    <div class="modal-title">${cat.icon} ${esc(item.title)}</div>
+    ${item.photoUrl?`<img src="${esc(item.photoUrl)}" style="width:100%;border-radius:12px;object-fit:cover;max-height:220px;margin-bottom:16px" onerror="this.style.display='none'">`:""}
+    ${item.albumUrl?`<a href="${esc(item.albumUrl)}" target="_blank" rel="noopener" class="item-link" style="font-size:13px;margin-bottom:14px;display:inline-flex">📸 Open Photo Album ↗</a><br><br>`:""}
+    <div style="font-size:13px;color:var(--muted);margin-bottom:6px">✅ Done on ${item.doneDate?fmtDate(item.doneDate):"—"}</div>
+    ${item.memoryNote?`<div style="font-size:15px;font-style:italic;color:var(--text2);line-height:1.6;margin-bottom:16px">"${esc(item.memoryNote)}"</div>`:""}
+    ${item.notes?`<div style="font-size:13px;color:var(--muted);line-height:1.5">${esc(item.notes)}</div>`:""}
+    <div class="modal-actions"><button class="btn-secondary" onclick="closeModal()">Close</button></div>`);
+};
+
+// ── Add / Edit Modal ──────────────────────────────────────────
+window.openAddModal = function(catPreset) {
+  editingId = null;
+  openModal(buildFormHTML(catPreset||"tv", null));
+  bindFormEvents();
+};
+
+window.openEditModal = function(id) {
+  editingId = id;
+  const item = items.find(i=>i.id===id); if(!item) return;
+  openModal(buildFormHTML(item.category, item));
+  bindFormEvents();
+};
+
+function buildFormHTML(cat, item) {
+  const isEdit = !!item;
+  const catFields = buildCatFields(cat, item);
+  return `
+    <div class="modal-title">${isEdit?"Edit Adventure":"New Adventure ✨"}</div>
+    <div class="form-group">
+      <label class="lbl">Category</label>
+      <select class="sel" id="f-cat" onchange="switchCatFields(this.value)">
+        ${CATS.map(c=>`<option value="${c.id}"${cat===c.id?" selected":""}>${c.icon} ${c.label}</option>`).join("")}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label class="lbl">Title *</label>
+        <input class="inp" id="f-title" value="${esc(item?.title||"")}" placeholder="Name…"/>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="lbl">Added By</label>
+        <select class="sel" id="f-addedby">
+          <option value="">—</option>
+          ${ADDED_BY.map(b=>`<option value="${b}"${item?.addedBy===b?" selected":""}>${b}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div id="cat-fields">${catFields}</div>
+    <div class="form-group">
+      <label class="lbl">Notes</label>
+      <textarea class="ta" id="f-notes" placeholder="Any thoughts or details…">${esc(item?.notes||"")}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="priority-toggle">
+        <input type="checkbox" id="f-priority" ${item?.priority?"checked":""}/>
+        ⭐ High Priority
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitForm()">
+        ${isEdit?"Save Changes":"Add Adventure"}
+      </button>
+    </div>`;
+}
+
+function buildCatFields(cat, item) {
+  switch(cat) {
+    case "tv": return `
+      <div class="form-group"><label class="lbl">Streaming Service</label>
+        <select class="sel" id="f-streaming">
+          ${STREAMING.map(s=>`<option value="${s}"${item?.streaming===s?" selected":""}>${s}</option>`).join("")}
+        </select></div>
+      <div class="form-group"><label class="lbl">Season / Status</label>
+        <input class="inp" id="f-season" value="${esc(item?.season||"")}" placeholder="e.g. Season 2, Ongoing…"/></div>`;
+    case "movies": return `
+      <div class="form-group"><label class="lbl">Where to Watch</label>
+        <select class="sel" id="f-streaming">
+          ${STREAMING.map(s=>`<option value="${s}"${item?.streaming===s?" selected":""}>${s}</option>`).join("")}
+        </select></div>
+      <div class="form-group"><label class="lbl">Trailer Link</label>
+        <input class="inp" id="f-trailerLink" value="${esc(item?.trailerLink||"")}" placeholder="https://…"/></div>`;
+    case "music": return `
+      <div class="form-row">
+        <div class="form-group"><label class="lbl">Venue</label>
+          <input class="inp" id="f-venue" value="${esc(item?.venue||"")}" placeholder="e.g. ACL Live…"/></div>
+        <div class="form-group"><label class="lbl">Date (if known)</label>
+          <input class="inp" id="f-concertDate" type="date" value="${esc(item?.concertDate||"")}"/></div>
+      </div>
+      <div class="form-group"><label class="lbl">Ticket Link</label>
+        <input class="inp" id="f-ticketLink" value="${esc(item?.ticketLink||"")}" placeholder="https://…"/></div>`;
+    case "food": return `
+      <div class="form-row">
+        <div class="form-group"><label class="lbl">Cuisine</label>
+          <input class="inp" id="f-cuisine" value="${esc(item?.cuisine||"")}" placeholder="e.g. Italian…"/></div>
+        <div class="form-group"><label class="lbl">Price Range</label>
+          <select class="sel" id="f-priceRange">
+            ${PRICE_RANGE.map(p=>`<option value="${p}"${item?.priceRange===p?" selected":""}>${p}</option>`).join("")}
+          </select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="lbl">Neighborhood / City</label>
+          <input class="inp" id="f-location" value="${esc(item?.location||"")}" placeholder="e.g. East Austin…"/></div>
+        <div class="form-group"><label class="lbl">Google Maps Link</label>
+          <input class="inp" id="f-mapLink" value="${esc(item?.mapLink||"")}" placeholder="https://maps…"/></div>
+      </div>`;
+    case "places": return `
+      <div class="form-row">
+        <div class="form-group"><label class="lbl">Location / City</label>
+          <input class="inp" id="f-location" value="${esc(item?.location||"")}" placeholder="e.g. Austin, TX…"/></div>
+        <div class="form-group"><label class="lbl">Type</label>
+          <select class="sel" id="f-placeType">
+            ${PLACE_TYPES.map(t=>`<option value="${t}"${item?.placeType===t?" selected":""}>${t}</option>`).join("")}
+          </select></div>
+      </div>
+      <div class="form-group"><label class="lbl">Maps Link</label>
+        <input class="inp" id="f-mapLink" value="${esc(item?.mapLink||"")}" placeholder="https://maps…"/></div>`;
+    default: return "";
+  }
+}
+
+function bindFormEvents() {}
+
+window.switchCatFields = function(cat) {
+  const item = editingId ? items.find(i=>i.id===editingId) : null;
+  document.getElementById("cat-fields").innerHTML = buildCatFields(cat, item);
+};
+
+window.submitForm = function() {
+  const title = document.getElementById("f-title")?.value.trim();
+  if (!title) return toast("Please enter a title");
+  const cat = document.getElementById("f-cat")?.value || "tv";
+
+  const base = {
+    id:       editingId || uid(),
+    title,
+    category: cat,
+    addedBy:  document.getElementById("f-addedby")?.value  || "",
+    notes:    document.getElementById("f-notes")?.value.trim() || "",
+    priority: document.getElementById("f-priority")?.checked || false,
+    done:     false,
+    ts:       Date.now(),
+  };
+
+  // Category-specific fields
+  if (cat === "tv" || cat === "movies") {
+    base.streaming   = document.getElementById("f-streaming")?.value    || "";
+    base.season      = document.getElementById("f-season")?.value.trim() || "";
+    base.trailerLink = document.getElementById("f-trailerLink")?.value.trim() || "";
+  }
+  if (cat === "music") {
+    base.venue       = document.getElementById("f-venue")?.value.trim()       || "";
+    base.concertDate = document.getElementById("f-concertDate")?.value         || "";
+    base.ticketLink  = document.getElementById("f-ticketLink")?.value.trim()   || "";
+  }
+  if (cat === "food") {
+    base.cuisine    = document.getElementById("f-cuisine")?.value.trim()  || "";
+    base.priceRange = document.getElementById("f-priceRange")?.value      || "";
+    base.location   = document.getElementById("f-location")?.value.trim() || "";
+    base.mapLink    = document.getElementById("f-mapLink")?.value.trim()  || "";
+  }
+  if (cat === "places") {
+    base.location  = document.getElementById("f-location")?.value.trim()  || "";
+    base.placeType = document.getElementById("f-placeType")?.value        || "";
+    base.mapLink   = document.getElementById("f-mapLink")?.value.trim()   || "";
+  }
+
+  // Preserve done state and memory fields if editing
+  if (editingId) {
+    const existing = items.find(i=>i.id===editingId) || {};
+    Object.assign(base, {
+      done: existing.done||false, doneDate: existing.doneDate||null,
+      memoryNote: existing.memoryNote||"", photoUrl: existing.photoUrl||"",
+      albumUrl: existing.albumUrl||"", ts: existing.ts||Date.now()
+    });
+  }
+
+  saveItem(base);
+  closeModal();
+  toast(editingId ? "✅ Updated!" : "✨ Adventure added!");
+};
+
+// ── Mark Done Modal ───────────────────────────────────────────
+window.openDoneModal = function(id) {
+  const item = items.find(i=>i.id===id); if(!item) return;
+  editingId = id;
+  openModal(`
+    <div class="modal-title">✅ Mark as Done!</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6">
+      Amazing! <strong style="color:var(--text)">${esc(item.title)}</strong> — log this memory for your scrapbook.
+    </p>
+    <div class="form-group">
+      <label class="lbl">Date You Did It</label>
+      <input class="inp" id="d-date" type="date" value="${new Date().toLocaleDateString("en-CA")}"/>
+    </div>
+    <div class="form-group">
+      <label class="lbl">Memory Note</label>
+      <textarea class="ta" id="d-note" placeholder="How was it? A moment you want to remember…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="lbl">Cover Photo URL <span style="font-weight:400;color:var(--faint)">(optional)</span></label>
+      <input class="inp" id="d-photo" placeholder="Paste a direct image URL…"
+        oninput="previewPhoto(this.value)"/>
+      <p class="photo-url-note">Paste a direct image link. Right-click any photo → "Copy image address"</p>
+      <img id="d-photo-preview" class="done-photo-preview"/>
+    </div>
+    <div class="form-group">
+      <label class="lbl">Google Photos Album Link <span style="font-weight:400;color:var(--faint)">(optional)</span></label>
+      <input class="inp" id="d-album" placeholder="https://photos.google.com/…" value="${esc(item.albumUrl||"")}"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitDone()">Save Memory ❤️</button>
+    </div>`);
+};
+
+window.previewPhoto = function(url) {
+  const img = document.getElementById("d-photo-preview");
+  if (!img) return;
+  if (url) { img.src = url; img.style.display = "block"; }
+  else img.style.display = "none";
+};
+
+window.submitDone = function() {
+  const item = items.find(i=>i.id===editingId); if(!item) return;
+  const updated = {
+    ...item,
+    done:       true,
+    doneDate:   document.getElementById("d-date")?.value   || new Date().toLocaleDateString("en-CA"),
+    memoryNote: document.getElementById("d-note")?.value.trim() || "",
+    photoUrl:   document.getElementById("d-photo")?.value.trim() || "",
+    albumUrl:   document.getElementById("d-album")?.value.trim() || "",
+  };
+  saveItem(updated);
+  closeModal();
+  toast("❤️ Memory saved!");
+};
+
+// ── Delete ────────────────────────────────────────────────────
+window.confirmDelete = function(id) {
+  const item = items.find(i=>i.id===id); if(!item) return;
+  openModal(`
+    <div class="modal-title">Remove Adventure?</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6">
+      Remove <strong style="color:var(--text)">${esc(item.title)}</strong> from your list? This can't be undone.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Keep It</button>
+      <button class="btn-primary" style="background:var(--rose)" onclick="doDelete('${id}')">Remove</button>
+    </div>`);
+};
+
+window.doDelete = function(id) {
+  deleteItem(id);
+  closeModal();
+  toast("Removed");
+};
+
+// ── Nav ───────────────────────────────────────────────────────
+window.setView = function(v) { view = v; render(); };
+window.setCat  = function(c) { filterCat = c; render(); };
+window.clearSearch = function() { search = ""; render(); };
+
+// ── Calendar integration for concerts ────────────────────────
+// When a concert with a date is saved, we store it so the Family Calendar
+// can read from adventures/concerts_calendar
+function syncConcertsToCalendar() {
+  const concerts = items.filter(i => i.category === "music" && i.concertDate && !i.done);
+  const calEntries = {};
+  concerts.forEach(c => {
+    calEntries[c.id] = {
+      title:    c.title,
+      date:     c.concertDate,
+      venue:    c.venue || "",
+      ticketLink: c.ticketLink || "",
+      type:     "concert",
+    };
+  });
+  set(ref(db, "adventures/concerts_calendar"), calEntries).catch(()=>{});
+}
+
+// Sync concerts whenever items change
+onValue(ref(db,"adventures/items"), () => { if (synced) syncConcertsToCalendar(); });
+
+render();
+</script>
+</body>
+</html>
