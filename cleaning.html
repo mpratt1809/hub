@@ -28,16 +28,17 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--purple)!
 @keyframes shimmer{0%{opacity:0.4}50%{opacity:0.7}100%{opacity:0.4}}
 
 /* Header */
-.header{background:linear-gradient(180deg,rgba(192,132,252,0.06) 0%,var(--bg) 100%);padding:20px 24px 16px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.header-inner{max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.header-left{display:flex;align-items:center;gap:14px}
-.logo-mark{width:44px;height:44px;border-radius:14px;background:var(--purple-glow);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid rgba(192,132,252,0.15)}
-.back-link{color:var(--text-dim);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.5px;transition:color 0.2s}
+.header{background:linear-gradient(180deg,rgba(192,132,252,0.06) 0%,var(--bg) 100%);padding:16px 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:900px;margin:0 auto;}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.back-link{color:var(--text-dim);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;transition:color 0.2s}
 .back-link:hover{color:var(--purple)}
-.header h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}
-.header .sub{font-size:12px;color:var(--text-dim);margin-top:1px}
+.header-center{text-align:center}
+.header-logo{font-size:20px;font-weight:900;letter-spacing:2px;color:var(--text)}
+.header-logo span{color:var(--purple)}
+.header-sub{font-size:11px;color:var(--text-dim);margin-top:1px;text-align:center}
 .sync-badge{font-size:11px;color:var(--green);background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);border-radius:20px;padding:3px 10px;font-weight:600}
-.content{max-width:800px;margin:0 auto;padding:20px 24px}
+.content{max-width:900px;margin:0 auto;padding:20px 24px}
 
 /* Tabs */
 .view-tabs{display:flex;gap:4px;background:var(--card);border-radius:12px;padding:4px;margin-bottom:20px;border:1px solid var(--border)}
@@ -337,7 +338,7 @@ function groupTasks(tasks,ds){
 
 function render(){
   const app=document.getElementById("app");
-  if(!synced){app.innerHTML=`<div class="header"><div class="header-inner"><div class="header-left"><div class="logo-mark">🧹</div><div><a href="./index.html" class="back-link">← PRATTHUB</a><h1>Cleaning Schedule</h1><p class="sub">Syncing…</p></div></div></div></div><div class="content"><div class="skeleton"><div class="skel-bar"></div><div class="skel-bar"></div><div class="skel-bar"></div></div></div>`;return;}
+  if(!synced){app.innerHTML=`<div class="header"><div class="header-inner"><div class="header-top"><a href="./index.html" class="back-link">← Pratt Hub</a><div class="header-center"><div class="header-logo">🧹 CLEANING <span>SCHEDULE</span></div></div><span class="sync-badge">🔴 Live</span></div></div></div><div class="content"><div class="skeleton"><div class="skel-bar"></div><div class="skel-bar"></div><div class="skel-bar"></div></div></div>`;return;}
   const todayTasks=getTasksForDate(selectedDate);
   const doneTasks=todayTasks.filter(t=>isTaskDone(t.id,selectedDate));
   const pct=todayTasks.length?Math.round(doneTasks.length/todayTasks.length*100):0;
@@ -347,12 +348,14 @@ function render(){
   app.innerHTML=`
     ${toastMsg?`<div class="toast">${esc(toastMsg)}</div>`:""}
     <div class="header"><div class="header-inner">
-      <div class="header-left"><div class="logo-mark">🧹</div><div>
-        <a href="./index.html" class="back-link">← PRATTHUB</a>
-        <h1>Cleaning Schedule</h1>
-        <p class="sub">${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</p>
-      </div></div>
-      <span class="sync-badge">🔴 Live</span>
+      <div class="header-top">
+        <a href="./index.html" class="back-link">← Pratt Hub</a>
+        <div class="header-center">
+          <div class="header-logo">🧹 CLEANING <span>SCHEDULE</span></div>
+          <div class="header-sub">${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div>
+        </div>
+        <span class="sync-badge">🔴 Live</span>
+      </div>
     </div></div>
     <div class="content">
       <div class="view-tabs">
