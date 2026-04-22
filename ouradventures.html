@@ -13,9 +13,9 @@
   --card:#181824;--card2:#1e1e2e;
   --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
   --text:#e8e8ef;--text2:#c0c0d0;--muted:#6a6a82;--faint:#4a4a60;
-  --gold:#c9a84c;
-  --gold-soft:rgba(201,168,76,0.12);
-  --gold-glow:rgba(201,168,76,0.25);
+  --gold:#00c853;
+  --gold-soft:rgba(0,200,83,0.12);
+  --gold-glow:rgba(0,200,83,0.25);
   --rose:#e07a72;--rose-soft:rgba(224,122,114,0.12);
   --sage:#5a9e6f;--sage-soft:rgba(90,158,111,0.12);
   --sky-blue:#5a8fbf;--sky-soft:rgba(90,143,191,0.12);
@@ -28,7 +28,7 @@
 /* ── Base ── */
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background:
-  radial-gradient(ellipse 80% 40% at 10% 0%,rgba(201,168,76,0.08) 0%,transparent 60%),
+  radial-gradient(ellipse 80% 40% at 10% 0%,rgba(0,200,83,0.08) 0%,transparent 60%),
   radial-gradient(ellipse 60% 50% at 90% 100%,rgba(212,117,107,0.06) 0%,transparent 60%);
   pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -39,7 +39,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!im
 @keyframes toastIn{from{opacity:0;transform:translateY(16px) translateX(-50%)}to{opacity:1;transform:translateY(0) translateX(-50%)}}
 
 /* ── Header ── */
-.header{background:linear-gradient(180deg,rgba(201,168,76,0.08) 0%,transparent 100%);
+.header{background:linear-gradient(180deg,rgba(0,200,83,0.08) 0%,transparent 100%);
   padding:20px 24px 16px;position:sticky;top:0;z-index:100;
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border)}
@@ -85,7 +85,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!im
 
 .cat-tv    {border-color:rgba(107,143,181,0.4)}.cat-tv.active    {background:var(--sky-soft);border-color:var(--sky-blue)}
 .cat-movies{border-color:rgba(212,117,107,0.4)}.cat-movies.active{background:var(--rose-soft);border-color:var(--rose)}
-.cat-music {border-color:rgba(201,168,76,0.4)} .cat-music.active {background:var(--gold-soft);border-color:var(--gold)}
+.cat-music {border-color:rgba(0,200,83,0.4)} .cat-music.active {background:var(--gold-soft);border-color:var(--gold)}
 .cat-food  {border-color:rgba(107,143,113,0.4)}.cat-food.active  {background:var(--sage-soft);border-color:var(--sage)}
 .cat-places{border-color:rgba(139,107,159,0.4)}.cat-places.active{background:var(--plum-soft);border-color:var(--plum)}
 
