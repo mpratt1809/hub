@@ -26,8 +26,12 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--orange)!
 @keyframes ti{from{opacity:0;transform:translateY(16px) translateX(-50%)}to{opacity:1;transform:translateY(0) translateX(-50%)}}
 @keyframes sh{0%,100%{opacity:0.4}50%{opacity:0.7}}
 .hdr{background:linear-gradient(180deg,rgba(255,124,67,0.07) 0%,transparent 100%);padding:20px 24px 16px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.hdr-in{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.hdr-l{display:flex;align-items:center;gap:14px}
+.hdr-in{max-width:1000px;margin:0 auto}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hdr-center{text-align:center;flex:1}
+.hdr-logo{font-size:20px;font-weight:900;letter-spacing:2px;color:var(--text)}
+.hdr-logo span{color:var(--orange)}
+.hdr-sub{font-size:11px;color:var(--muted);margin-top:1px}
 .logo{width:44px;height:44px;border-radius:14px;background:var(--og);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid rgba(255,124,67,0.2);flex-shrink:0}
 .back{color:var(--text-dim);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;transition:color 0.2s;display:block}
 .back:hover{color:var(--orange)}
@@ -164,7 +168,7 @@ const getPhotoCaption=r=>r.photoCaption||(r.photoMemories&&r.photoMemories[0]?.c
 const getPhotoDate=r=>r.photoDate||(r.photoMemories&&r.photoMemories[0]?.date)||"";
 function toast(m){document.getElementById("tm").innerHTML=`<div class="toast">${esc(m)}</div>`;clearTimeout(tt);tt=setTimeout(()=>{document.getElementById("tm").innerHTML="";},2500);}
 function ra(){rh();if(view==="grid")rg();else if(view==="detail")rd();else if(view==="form")rf();}
-function rh(){document.getElementById("hm").innerHTML=`<div class="hdr"><div class="hdr-in"><div class="hdr-l"><div class="logo">🍳</div><div><a href="./index.html" class="back">← PRATTHUB</a><div class="hdr-title">Family Cookbook</div><div class="hdr-sub">${recs.length} recipe${recs.length!==1?"s":""} and counting</div></div></div><div class="hdr-r"><span class="sync">${synced?"🔴 Live":"⏳ Syncing"}</span>${view==="grid"?`<button class="btn-add" onclick="openForm(null)">+ Add Recipe</button>`:""}</div></div></div>`;}
+function rh(){document.getElementById("hm").innerHTML=`<div class="hdr"><div class="hdr-in"><div class="hdr-top"><a href="./index.html" class="back">← Pratt Hub</a><div class="hdr-center"><div class="hdr-logo">🍳 FAMILY <span>COOKBOOK</span></div><div class="hdr-sub">${recs.length} recipe${recs.length!==1?"s":""} and counting</div></div><div class="hdr-r"><span class="sync">${synced?"🔴 Live":"⏳ Syncing"}</span>${view==="grid"?`<button class="btn-add" onclick="openForm(null)">+ Add Recipe</button>`:""}</div></div></div></div>`;}
 function rg(){
   const fil=recs.filter(r=>{const mc=cf==="All Recipes"||r.category===cf;const ms=!sq||r.title.toLowerCase().includes(sq.toLowerCase())||(r.ingredients||[]).some(i=>i.name.toLowerCase().includes(sq.toLowerCase()))||(r.addedBy||"").toLowerCase().includes(sq.toLowerCase());const mg=!gf||r.glutenFree;return mc&&ms&&mg;});
   const ctrl=`<div class="ctrl"><div class="sw"><span style="color:var(--text-dim)">🔍</span><input id="si" type="text" placeholder="Search recipes, ingredients, or family members…" value="${esc(sq)}"/>${sq?`<button class="sc" onclick="sq='';rg()">✕</button>`:""}</div><div class="fr">${CATS.map(c=>`<button class="cb${cf===c?" on":""}" onclick="cf='${esc(c)}';rg()">${esc(c)}</button>`).join("")}<button class="gfb${gf?" on":""}" onclick="gf=!gf;rg()">GF Gluten Free</button></div></div>`;
