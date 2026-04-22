@@ -36,11 +36,12 @@ header {
   border-bottom: 1px solid var(--border); padding: 12px 20px;
 }
 .header-inner { max-width: 900px; margin: 0 auto; }
-.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.header-center { text-align: center; flex: 1; }
 .back-link { color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
-.back-link:hover { color: var(--success); }
+.back-link:hover { color: var(--accent2); }
 .header-logo { font-family: var(--font-head); font-size: 22px; letter-spacing: 3px; }
-.header-logo span { color: var(--accent); }
+.header-logo span { color: var(--accent2); }
 .person-row { display: flex; gap: 8px; }
 .person-btn { flex: 1; padding: 8px; border-radius: var(--radius); border: 2px solid var(--border); font-weight: 700; font-size: 13px; background: var(--surface); color: var(--muted); transition: all 0.2s; letter-spacing: 1px; text-transform: uppercase; }
 .person-btn.active-sky    { border-color: var(--sky);    color: var(--sky);    background: rgba(168,255,62,0.08); }
@@ -50,7 +51,7 @@ header {
 .goal-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
 .goal-bar-inner { max-width: 900px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 12px; }
 .goal-label { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
-.goal-track { width: 180px; flex-shrink: 0; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.goal-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .goal-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
 .goal-fill.sky    { background: var(--sky); }
 .goal-fill.meagan { background: var(--meagan); }
@@ -216,7 +217,10 @@ header {
   <div class="header-inner">
     <div class="header-top">
       <a class="back-link" href="./index.html">← Pratt Hub</a>
-      <div class="header-logo">📚 PRATT <span>READS</span></div>
+      <div class="header-center">
+        <div class="header-logo">📚 PRATT <span>READS</span></div>
+      </div>
+      <div style="width:80px"></div>
     </div>
     <div class="person-row">
       <button class="person-btn active-sky" id="btnSky" onclick="setPerson('sky')">Sky</button>
@@ -234,7 +238,7 @@ header {
 </div>
 
 <div class="content">
-  <div class="goal-bar-inner" style="margin-bottom:16px;padding:10px 14px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:10px 14px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
     <span class="goal-label">📖 Goal</span>
     <div class="goal-track"><div class="goal-fill sky" id="goalFill" style="width:0%"></div></div>
     <span class="goal-count" id="goalCount">0 / 0</span>
