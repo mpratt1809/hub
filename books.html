@@ -225,15 +225,6 @@ header {
   </div>
 </header>
 
-<div class="goal-bar">
-  <div class="goal-bar-inner">
-    <span class="goal-label">📖 Goal</span>
-    <div class="goal-track"><div class="goal-fill sky" id="goalFill" style="width:0%"></div></div>
-    <span class="goal-count" id="goalCount">0 / 0</span>
-    <button class="goal-edit-btn" onclick="openGoalModal()">Edit</button>
-  </div>
-</div>
-
 <div class="shelf-wrap">
   <div class="shelf-tabs">
     <button class="shelf-tab active" id="tab-reading" onclick="setShelf('reading')">Reading <span class="shelf-count" id="cnt-reading">0</span></button>
@@ -243,6 +234,12 @@ header {
 </div>
 
 <div class="content">
+  <div class="goal-bar-inner" style="margin-bottom:16px;padding:10px 14px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
+    <span class="goal-label">📖 Goal</span>
+    <div class="goal-track"><div class="goal-fill sky" id="goalFill" style="width:0%"></div></div>
+    <span class="goal-count" id="goalCount">0 / 0</span>
+    <button class="goal-edit-btn" onclick="openGoalModal()">Edit</button>
+  </div>
   <div class="search-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
