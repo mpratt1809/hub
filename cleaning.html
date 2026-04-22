@@ -168,8 +168,17 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--purple)!
 .btn-save-edit{padding:7px 16px;border-radius:8px;border:none;background:var(--purple);color:#0a0a0f;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)}
 .btn-cancel-edit{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-dim);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)}
 
-/* Empty / Toast */
-.empty-state{text-align:center;padding:48px 20px;color:var(--text-dim)}
+/* Task grid */
+.task-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:4px}
+.task-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:8px;min-height:100px}
+.task-card:hover{border-color:var(--purple);transform:translateY(-1px)}
+.task-card.task-done{opacity:0.35}
+.task-card-check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--purple);transition:all 0.2s;flex-shrink:0}
+.task-card-check.done{background:var(--purple);border-color:var(--purple);color:#0a0a0f}
+.task-card-body{flex:1}
+.task-card-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px}
+.task-card.task-done .task-card-name{text-decoration:line-through;color:var(--text-dim)}
+.task-card-room{font-size:10px;color:var(--text-dim);margin-bottom:4px}
 .empty-state .icon{font-size:48px;margin-bottom:12px}
 .empty-state h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--purple);color:#0a0a0f;padding:12px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:2000;box-shadow:0 8px 30px rgba(192,132,252,0.3);animation:toastIn 0.3s ease}
@@ -401,45 +410,23 @@ function renderDay(tasks,done,pct,dayName){
   if(dayName==="sunday")return`<div class="empty-state"><div class="icon">😌</div><h3>Rest Day</h3><p>Sundays are for rest — no cleaning tasks!</p></div>`;
   const isMon=dayName==="monday",isRecycling=isMon&&isRecyclingWeek(selectedDate);
   const trashHtml=isMon?`<div class="trash-banner"><div class="trash-icon">🗑️</div><div class="trash-info"><div class="trash-title">Monday Trash Day</div><div class="trash-detail">Compost + Trash${isRecycling?" · ♻️ Recycling this week!":""}</div></div><span class="trash-badge ${isRecycling?"trash-yes":"trash-no"}">${isRecycling?"♻️ Recycling":"No Recycling"}</span></div>`:"";
-  const groups=groupTasks(tasks,selectedDate);
   if(!tasks.length)return`${trashHtml}<div class="empty-state"><div class="icon">✅</div><h3>Light day!</h3><p>No scheduled tasks.</p></div>`;
 
-  const groupsHtml=groups.map(g=>{
-    const gKey=g.name.toLowerCase().replace(/[^a-z0-9]/g,"")+"|"+g.freq;
-    const isExpanded=expandedGroups[gKey];
-    const isSingle=g.total===1;
-    const checkClass=g.allDone?"done":g.someDone?"partial":"";
-    const roomTags=g.tasks.map(t=>{const r=ROOM_MAP[t.room];return r?`<span>${r.emoji} ${r.label}</span>`:""}).join("");
+  // Sort: undone first, done last
+  const sorted=[...tasks].sort((a,b)=>{
+    const ad=isTaskDone(a.id,selectedDate),bd=isTaskDone(b.id,selectedDate);
+    return ad===bd?0:ad?1:-1;
+  });
 
-    if(isSingle){
-      const t=g.tasks[0],isDone=isTaskDone(t.id,selectedDate),r=ROOM_MAP[t.room]||{};
-      // Single task: clicking anywhere on the row toggles it
-      return`<div class="task-group"><div class="task-group-header" onclick="window.toggleTask('${t.id}','${selectedDate}')">
-        <div class="task-group-check${isDone?" done":""}">${isDone?"✓":""}</div>
-        <div class="task-group-body"><div class="task-group-name">${esc(t.name)}</div>
-        <div class="task-group-rooms"><span>${r.emoji||""} ${r.label||""}</span></div>
-        ${t.note?`<div style="font-size:11px;color:var(--text-faint);font-style:italic;margin-top:2px">${esc(t.note)}</div>`:""}
-        <div class="task-group-meta"><span class="freq-badge freq-${t.freq}">${FREQ_LABELS[t.freq]}</span></div></div>
-      </div></div>`;
-    }
-
-    // Multi-room group: header expands, sub-items toggle individually
-    return`<div class="task-group">
-      <div class="task-group-header" onclick="toggleGroup('${gKey}')">
-        <div class="task-group-check ${checkClass}">${g.allDone?"✓":g.someDone?"–":""}</div>
-        <div class="task-group-body"><div class="task-group-name">${esc(g.name)}</div>
-        <div class="task-group-rooms">${roomTags}</div>
-        <div class="task-group-meta"><span class="freq-badge freq-${g.freq}">${FREQ_LABELS[g.freq]}</span></div></div>
-        <div class="task-group-right"><span class="task-group-count">${g.doneCount}/${g.total}</span><span style="color:var(--text-faint);font-size:14px">${isExpanded?"▴":"▾"}</span></div>
-      </div>
-      <div class="task-sub-list${isExpanded?" open":""}">
-        ${g.tasks.map(t=>{const isDone=isTaskDone(t.id,selectedDate),r=ROOM_MAP[t.room]||{};
-          return`<div class="task-sub${isDone?" done":""}" onclick="event.stopPropagation();window.toggleTask('${t.id}','${selectedDate}')">
-            <div class="task-sub-check${isDone?" done":""}">${isDone?"✓":""}</div>
-            <span class="task-sub-room">${r.emoji} ${r.label}</span>
-            ${t.note?`<span class="task-sub-note">— ${esc(t.note)}</span>`:""}
-          </div>`;
-        }).join("")}
+  const cardsHtml=sorted.map(t=>{
+    const isDone=isTaskDone(t.id,selectedDate);
+    const r=ROOM_MAP[t.room]||{};
+    return`<div class="task-card${isDone?" task-done":""}" onclick="window.toggleTask('${t.id}','${selectedDate}')">
+      <div class="task-card-check${isDone?" done":""}">${isDone?"✓":""}</div>
+      <div class="task-card-body">
+        <div class="task-card-name">${esc(t.name)}</div>
+        <div class="task-card-room">${r.emoji||""} ${r.label||""}</div>
+        <span class="freq-badge freq-${t.freq}">${FREQ_LABELS[t.freq]}</span>
       </div>
     </div>`;
   }).join("");
@@ -452,7 +439,8 @@ function renderDay(tasks,done,pct,dayName){
     </div>
     <div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
     <div class="progress-label"><span>${done.length} of ${tasks.length}</span><span>${pct===100?"✨ All done!":""}</span></div></div>
-    ${trashHtml}${groupsHtml}`;
+    ${trashHtml}
+    <div class="task-grid">${cardsHtml}</div>`;
 }
 
 function renderWeek(){
