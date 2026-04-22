@@ -105,8 +105,8 @@ header {
 .scan-status { font-size: 13px; font-weight: 600; color: var(--accent2); min-height: 20px; }
 
 /* ── Book cards ── */
-.books-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-.book-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.books-list { display: flex; flex-direction: column; gap: 10px; }
+.book-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; gap: 14px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
 .book-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.2s; }
 .book-card.sky::before    { background: radial-gradient(circle at 50% 0%, rgba(168,255,62,0.07), transparent 70%); }
 .book-card.meagan::before { background: radial-gradient(circle at 50% 0%, rgba(232,255,71,0.07), transparent 70%); }
@@ -114,10 +114,10 @@ header {
 .book-card:hover::before { opacity: 1; }
 .book-card.sky:hover    { border-color: rgba(168,255,62,0.4); }
 .book-card.meagan:hover { border-color: rgba(232,255,71,0.4); }
-.bk-cover-wrap { width: 100%; height: 200px; overflow: hidden; background: var(--surface2); flex-shrink: 0; }
-.bk-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
-.bk-cover-ph { width: 100%; height: 200px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 48px; flex-shrink: 0; }
-.bk-info { flex: 1; padding: 14px; position: relative; z-index: 1; }
+
+.bk-cover { width: 72px; height: 104px; object-fit: cover; border-radius: 5px; flex-shrink: 0; position: relative; z-index: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+.bk-cover-ph { width: 72px; height: 104px; border-radius: 5px; flex-shrink: 0; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 28px; position: relative; z-index: 1; }
+.bk-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
 .bk-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 3px; }
 .bk-author { font-size: 12px; color: var(--muted); margin-bottom: 7px; }
 .status-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
@@ -335,7 +335,7 @@ function renderList() {
     const pct = b.pages ? Math.round(((b.currentPage||0)/b.pages)*100) : 0;
     const jc  = b.journal ? Object.keys(b.journal).length : 0;
     const cov = b.cover
-      ? `<div class="bk-cover-wrap"><img class="bk-cover" src="${b.cover}" alt="" onerror="this.parentElement.innerHTML='<div style=\\'height:200px;display:flex;align-items:center;justify-content:center;font-size:48px\\'>📖</div>'"></div>`
+      ? `<img class="bk-cover" src="${b.cover}" alt="" onerror="this.style.display='none'">`
       : `<div class="bk-cover-ph">📖</div>`;
     const bc  = b.shelf==="reading"?"badge-reading":b.shelf==="want"?"badge-want":"badge-finished";
     const bl  = b.shelf==="reading"?"Currently Reading":b.shelf==="want"?"Want to Read":"Finished";
