@@ -43,7 +43,7 @@ input, select, textarea { font-family: inherit; }
 .btn-today { font-size: 10px; color: #6a6a82; background: none; border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 3px 9px; }
 .btn-today:hover { background: #141420; }
 .jump-picker { display: flex; gap: 8px; align-items: center; background: #0d0d14; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 6px 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-.jump-picker select { border: 1px solid rgba(255,255,255,0.06); border-radius: 7px; padding: 5px 8px; font-size: 13px; background: #fafafa; outline: none; }
+.jump-picker select { border: 1px solid rgba(255,255,255,0.06); border-radius: 7px; padding: 5px 8px; font-size: 13px; background: #181824; outline: none; }
 .jump-picker select:focus { border-color: #c9a96e; }
 .jump-go { background: #10101a; color: #e8e8ef; border: none; border-radius: 7px; padding: 6px 14px; font-size: 12px; font-weight: 700; }
 .jump-cancel { background: none; border: none; font-size: 18px; color: #6a6a82; padding: 0 4px; }
@@ -67,7 +67,7 @@ input, select, textarea { font-family: inherit; }
 .recur-choice-title { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 8px; }
 .recur-choice-btn { display: block; width: 100%; text-align: left; padding: 8px 12px; border-radius: 7px; border: 1px solid rgba(71,200,255,0.15); background: #0d0d14; margin-bottom: 5px; font-size: 12px; cursor: pointer; transition: background 0.15s; }
 .recur-choice-btn:last-child { margin-bottom: 0; }
-.recur-choice-btn:hover { background: #fef3c7; }
+.recur-choice-btn:hover { background: rgba(71,200,255,0.08); }
 .ev-pill:hover { opacity: 0.82; }
 .ev-more { font-size: 9px; color: #6a6a82; }
 .day-panel { margin-top: 12px; background: #0d0d14; border-radius: 14px; border: 1px solid rgba(71,200,255,0.1); padding: 16px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
@@ -136,7 +136,7 @@ input, select, textarea { font-family: inherit; }
 .note-card { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid rgba(71,200,255,0.1); border-radius: 10px; transition: all 0.15s; }
 .note-card.done { background: #10101a; opacity: 0.65; }
 .note-card.pinned { background: #181824bf0; border-color: #e8e8ef; }
-.note-check { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; border-radius: 5px; border: 2px solid #cbd5e1; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; transition: all 0.15s; }
+.note-check { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.15); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; transition: all 0.15s; }
 .note-check.checked { background: #34d399; border-color: #34d399; }
 .note-body { flex: 1; min-width: 0; }
 .note-text { font-size: 13px; word-break: break-word; }
@@ -155,19 +155,19 @@ input, select, textarea { font-family: inherit; }
 .modal { background: #0d0d14; border-radius: 18px; padding: 24px 24px 18px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.22); }
 .modal-title { font-weight: 700; font-size: 17px; margin-bottom: 16px; font-family: 'Playfair Display', Georgia, serif; }
 .modal-lbl { display: block; font-size: 11px; font-weight: 700; color: #6a6a82; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; margin-top: 12px; }
-.modal-inp { width: 100%; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 9px 12px; font-size: 13px; background: #fafafa; outline: none; }
+.modal-inp { width: 100%; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 9px 12px; font-size: 13px; background: #181824; outline: none; }
 .modal-inp:focus { border-color: #c9a96e; }
 .modal-ta { resize: vertical; min-height: 60px; }
 .modal-btns { display: flex; gap: 8px; margin-top: 18px; }
 .modal-save { flex: 1; background: #10101a; color: #e8e8ef; border: none; border-radius: 9px; padding: 11px; font-size: 13px; font-weight: 700; }
 .modal-save:hover { opacity: 0.88; }
 .modal-cancel { background: #10101a; color: #6a6a82; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 11px 13px; font-size: 13px; }
-.modal-delete { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; border-radius: 9px; padding: 11px 12px; font-size: 13px; }
+.modal-delete { background: rgba(255,71,87,0.1); color: #ff5c5c; border: 1px solid rgba(255,92,92,0.2); border-radius: 9px; padding: 11px 12px; font-size: 13px; }
 .time-toggle { display: flex; gap: 8px; margin-top: 4px; }
-.time-toggle-btn { flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; font-size: 12px; background: #fafafa; color: #6a6a82; transition: all 0.15s; }
+.time-toggle-btn { flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; font-size: 12px; background: #181824; color: #e8e8ef; transition: all 0.15s; }
 .time-toggle-btn.active { background: #10101a; color: #e8e8ef; border-color: #e8e8ef; font-weight: 700; }
 .time-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
-.time-row input[type=time] { flex: 1; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 9px 12px; font-size: 13px; background: #fafafa; outline: none; }
+.time-row input[type=time] { flex: 1; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 9px 12px; font-size: 13px; background: #181824; outline: none; }
 .time-row input[type=time]:focus { border-color: #c9a96e; }
 /* ── Tasks / Requests ── */
 .tasks-widget { margin: 0 16px 14px; background: #0d0d14; border-radius: 14px; border: 1px solid rgba(71,200,255,0.1); box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; }
@@ -180,14 +180,14 @@ input, select, textarea { font-family: inherit; }
 .tasks-chevron.open { transform: rotate(180deg); }
 .tasks-body { padding: 10px 14px 12px; }
 .tasks-add-row { display: flex; gap: 8px; margin-bottom: 10px; }
-.task-input { flex: 1; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 8px 12px; font-size: 13px; background: #fafafa; outline: none; font-family: inherit; }
+.task-input { flex: 1; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 8px 12px; font-size: 13px; background: #181824; outline: none; font-family: inherit; }
 .task-input:focus { border-color: #c9a96e; }
 .task-from-sel { border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 7px 10px; font-size: 12px; background: #0d0d14; font-family: inherit; }
 .task-add-btn { background: #10101a; color: #e8e8ef; border: none; border-radius: 9px; padding: 8px 14px; font-size: 12px; font-weight: 700; white-space: nowrap; font-family: inherit; }
 .task-list { display: flex; flex-direction: column; gap: 6px; }
 .task-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid rgba(71,200,255,0.1); border-radius: 9px; transition: all 0.15s; }
 .task-item.done { background: #10101a; opacity: 0.6; }
-.task-check { flex-shrink: 0; width: 18px; height: 18px; border-radius: 5px; border: 2px solid #cbd5e1; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; transition: all 0.15s; cursor: pointer; }
+.task-check { flex-shrink: 0; width: 18px; height: 18px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.15); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; transition: all 0.15s; cursor: pointer; }
 .task-check.checked { background: #34d399; border-color: #34d399; }
 .task-text { flex: 1; font-size: 13px; }
 .task-text.struck { text-decoration: line-through; color: #6a6a82; }
@@ -268,14 +268,14 @@ input, select, textarea { font-family: inherit; }
     const db = getDatabase(fbApp);
 
     const CATEGORIES = [
-      { id:"birthday",    label:"🎂 Birthday",      color:"#f87171", bg:"#fef2f2" },
-      { id:"appointment", label:"🏥 Appointment",    color:"#60a5fa", bg:"#eff6ff" },
-      { id:"vet",         label:"🐾 Vet / Pet Care", color:"#f472b6", bg:"#fdf2f8" },
-      { id:"wfh",         label:"🏠 Work From Home", color:"#34d399", bg:"#ecfdf5" },
-      { id:"errand",      label:"🛒 Errand / Task",  color:"#fb923c", bg:"#fff7ed" },
-      { id:"holiday",     label:"🌴 Holiday",        color:"#facc15", bg:"#fefce8" },
-      { id:"date",        label:"💛 Date Night",     color:"#c084fc", bg:"#faf5ff" },
-      { id:"other",       label:"📌 Other",          color:"#94a3b8", bg:"#f8fafc" },
+      { id:"birthday",    label:"🎂 Birthday",      color:"#f87171", bg:"rgba(248,113,113,0.12)" },
+      { id:"appointment", label:"🏥 Appointment",    color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
+      { id:"vet",         label:"🐾 Vet / Pet Care", color:"#f472b6", bg:"rgba(244,114,182,0.12)" },
+      { id:"wfh",         label:"🏠 Work From Home", color:"#34d399", bg:"rgba(52,211,153,0.12)" },
+      { id:"errand",      label:"🛒 Errand / Task",  color:"#fb923c", bg:"rgba(251,146,60,0.12)" },
+      { id:"holiday",     label:"🌴 Holiday",        color:"#facc15", bg:"rgba(250,204,21,0.12)" },
+      { id:"date",        label:"💛 Date Night",     color:"#c084fc", bg:"rgba(192,132,252,0.12)" },
+      { id:"other",       label:"📌 Other",          color:"#94a3b8", bg:"rgba(148,163,184,0.12)" },
     ];
     const NOTE_CATS = [
       { id:"shopping", label:"🛒 Shopping",  color:"#fb923c" },
@@ -631,7 +631,7 @@ input, select, textarea { font-family: inherit; }
       }
       return`<div class="modal-overlay" id="modalOverlay"><div class="modal">
         <div class="modal-title">${editEv ? (S.recurEditMode==="this" ? "Edit This Occurrence" : "Edit Event") : "New Event"}</div>
-        ${S.recurEditMode==="this"?`<div style="font-size:11px;color:#c9a96e;background:#fffbf0;border:1px solid #e8d5b7;border-radius:7px;padding:6px 10px;margin-bottom:12px">✏️ Editing only: ${esc(S.editOccurrenceDate||"")}</div>`:""}
+        ${S.recurEditMode==="this"?`<div style="font-size:11px;color:#c9a96e;background:#181824bf0;border:1px solid #e8d5b7;border-radius:7px;padding:6px 10px;margin-bottom:12px">✏️ Editing only: ${esc(S.editOccurrenceDate||"")}</div>`:""}
         <label class="modal-lbl">Title</label>
         <input class="modal-inp" id="mTitle" value="${esc(form.title)}" placeholder="Event name…"/>
         <label class="modal-lbl">Start Date</label>
