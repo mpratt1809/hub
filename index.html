@@ -148,9 +148,19 @@
     }
 
     .card-desc {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
       line-height: 1.5;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+      margin-top: 0;
+    }
+    .app-card:hover .card-desc {
+      max-height: 80px;
+      opacity: 1;
+      margin-top: 8px;
     }
 
     .card-arrow {
