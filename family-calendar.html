@@ -492,7 +492,7 @@ input, select, textarea { font-family: inherit; }
           <button class="nav-btn" id="btnNext">›</button>
         </div>
         ${view==="day"?`
-        <div class="month-wrap">
+        <div class="day-wrap">
           <div class="day-view-date">
             <div class="day-view-dayname">${(()=>{const d=new Date((sel||TODAY)+"T12:00:00");return DAYS[d.getDay()];})()}</div>
             <div class="day-view-num">${new Date((sel||TODAY)+"T12:00:00").getDate()}</div>
@@ -567,6 +567,8 @@ input, select, textarea { font-family: inherit; }
           </div>
         </div>
         <div class="legend">${CATEGORIES.map(c=>`<div class="legend-item" style="background:${c.bg}"><div class="legend-dot" style="background:${c.color}"></div><span style="color:${c.color}">${esc(c.label)}</span></div>`).join("")}</div>
+        </div>`:""}
+        ${view==="month"?`
         <div class="month-wrap">
           <div class="day-headers">${DAYS.map(d=>`<div class="day-hdr">${d}</div>`).join("")}</div>
           <div class="month-grid">
