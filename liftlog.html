@@ -759,10 +759,10 @@ let deloadState = {
 };
 
 function getDeloadWeightTarget(exName) {
-  // Returns 60% of last logged weight as a suggestion string, or null
+  // Returns {last, target} or null
   const sessions = allSessions.filter(s => s.user === currentUser);
   for (const session of sessions) {
-    if (deloadState.active && session.date >= deloadState.startDate) continue; // skip deload sessions
+    if (deloadState.active && session.date >= deloadState.startDate) continue;
     const ex = (session.exercises||[]).find(e => e.name === exName);
     if (ex && ex.setData && ex.setData.length) {
       const weights = ex.setData
@@ -770,8 +770,8 @@ function getDeloadWeightTarget(exName) {
         .filter(w => !isNaN(w) && w > 0);
       if (!weights.length) return null;
       const max = Math.max(...weights);
-      const target = Math.round(max * 0.6 / 2.5) * 2.5; // round to nearest 2.5
-      return target + " lbs (60%)";
+      const target = Math.round(max * 0.6 / 2.5) * 2.5;
+      return { last: max, target };
     }
   }
   return null;
@@ -1227,9 +1227,9 @@ function buildExerciseBlock(ex, idx) {
   // Deload weight hint
   const deloadHint = deloadState.active
     ? (() => {
-        const target = getDeloadWeightTarget(ex.name);
-        return target
-          ? `<div class="deload-weight-hint">🏖 Deload target: ~${target}</div>`
+        const t = getDeloadWeightTarget(ex.name);
+        return t
+          ? `<div class="deload-weight-hint">🏖 Last: ${t.last} lbs → Target: ~${t.target} lbs (60%)</div>`
           : `<div class="deload-weight-hint">🏖 Deload — go lighter today</div>`;
       })()
     : "";
