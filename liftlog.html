@@ -824,9 +824,11 @@ function getNextSunday() {
 }
 
 function getDeloadEndDate(startDateStr) {
-  // Always Sun→Sat (6 days after start)
+  // End on Saturday of the same week
   const d = new Date(startDateStr + "T12:00:00");
-  d.setDate(d.getDate() + 6);
+  const dayOfWeek = d.getDay(); // 0=Sun, 6=Sat
+  const daysUntilSat = dayOfWeek === 6 ? 0 : 6 - dayOfWeek;
+  d.setDate(d.getDate() + daysUntilSat);
   return d.toLocaleDateString("en-CA");
 }
 
@@ -1037,17 +1039,16 @@ function selectUser(user) {
   document.getElementById("log-greeting").textContent   = user === "sky" ? "SKY'S WORKOUT" : "MEAGAN'S WORKOUT";
 
   buildDayPills();
-  const today = new Date().toLocaleDateString("en-US",{weekday:"long"}).toLowerCase();
-  selectDay(GYM_DAYS.includes(today) ? today : "monday");
 
-  // Set date field to today
-  const dateField = document.getElementById("session-date");
-  if (dateField) dateField.value = new Date().toLocaleDateString("en-CA");
-
-  // Load deload state first, then history
+  // Load deload state first, then history, then render exercises
   loadDeloadState().then(() => {
     renderDeloadBanner();
-    loadHistory(user);
+    loadHistory(user).then(() => {
+      const today = new Date().toLocaleDateString("en-US",{weekday:"long"}).toLowerCase();
+      selectDay(GYM_DAYS.includes(today) ? today : "monday");
+      const dateField = document.getElementById("session-date");
+      if (dateField) dateField.value = new Date().toLocaleDateString("en-CA");
+    });
   });
 }
 
@@ -2178,17 +2179,9 @@ async function loadHistory(user) {
     allSessions = snap.docs
       .map(d => ({id:d.id,...d.data()}))
       .filter(s => (s.date || "") >= "2025-09-01");
-    // Sort client-side by date string descending (avoids composite index requirement)
     allSessions.sort((a,b) => (b.date||"").localeCompare(a.date||""));
     populateHistYears(allSessions);
     if (onHistoryTab) applyHistFilters();
-    // Re-render exercises now that allSessions is populated —
-    // fixes race condition where exercises rendered before Firebase loaded history
-    if (selectedDay && user === currentUser) {
-      buildExercises(selectedDay);
-      setTimeout(() => restoreDraft(), 100);
-    }
-    // Check if a deload suggestion should be shown (only after sessions are loaded)
     if (user === "sky") checkDeloadSuggestion();
   } catch(e) {
     if (onHistoryTab) list.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h3>Could not load</h3><p>${e.message}</p></div>`;
