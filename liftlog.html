@@ -905,23 +905,6 @@ function showDeloadSuggestion() {
   banner.style.display = "block";
 }
 
-  const banner = document.getElementById("deload-banner");
-  if (!banner) return;
-  banner.innerHTML = `
-    <div class="deload-suggestion">
-      <div class="deload-suggest-icon">💪</div>
-      <div class="deload-suggest-body">
-        <div class="deload-suggest-title">Time for a Deload Week!</div>
-        <div class="deload-suggest-sub">You've trained hard for 3+ weeks. A deload week (${startFmt}–${endFmt}) will help your body recover and come back stronger.</div>
-      </div>
-      <div class="deload-suggest-actions">
-        <button class="deload-btn-yes" onclick="confirmDeload('${startDate}')">Let's Do It</button>
-        <button class="deload-btn-no"  onclick="dismissDeload()">Skip</button>
-      </div>
-    </div>`;
-  banner.style.display = "block";
-}
-
 window.confirmDeload = async function(startDate) {
   const endDate = getDeloadEndDate(startDate);
   deloadState = { active: true, startDate, endDate, suggested: true, id: "shared" };
