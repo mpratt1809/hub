@@ -626,6 +626,15 @@ function buildCatFields(cat, item) {
       </div>
       <div class="form-group"><label class="lbl">Ticket Link</label>
         <input class="inp" id="f-ticketLink" value="${esc(item?.ticketLink||"")}" placeholder="https://…"/></div>`;
+    case "comedy": return `
+      <div class="form-row">
+        <div class="form-group"><label class="lbl">Venue</label>
+          <input class="inp" id="f-venue" value="${esc(item?.venue||"")}" placeholder="e.g. Moody Center…"/></div>
+        <div class="form-group"><label class="lbl">Date (if known)</label>
+          <input class="inp" id="f-concertDate" type="date" value="${esc(item?.concertDate||"")}"/></div>
+      </div>
+      <div class="form-group"><label class="lbl">Ticket Link</label>
+        <input class="inp" id="f-ticketLink" value="${esc(item?.ticketLink||"")}" placeholder="https://…"/></div>`;
     case "food": return `
       <div class="form-row">
         <div class="form-group"><label class="lbl">Cuisine</label>
@@ -685,7 +694,7 @@ window.submitForm = function() {
     base.season      = document.getElementById("f-season")?.value.trim() || "";
     base.trailerLink = document.getElementById("f-trailerLink")?.value.trim() || "";
   }
-  if (cat === "music") {
+  if (cat === "music" || cat === "comedy") {
     base.venue       = document.getElementById("f-venue")?.value.trim()       || "";
     base.concertDate = document.getElementById("f-concertDate")?.value         || "";
     base.ticketLink  = document.getElementById("f-ticketLink")?.value.trim()   || "";
@@ -802,7 +811,7 @@ window.clearSearch = function() { search = ""; render(); };
 // When a concert with a date is saved, we store it so the Family Calendar
 // can read from adventures/concerts_calendar
 function syncConcertsToCalendar() {
-  const concerts = items.filter(i => i.category === "music" && i.concertDate && !i.done);
+  const concerts = items.filter(i => (i.category === "music" || i.category === "comedy") && i.concertDate && !i.done);
   const calEntries = {};
   concerts.forEach(c => {
     calEntries[c.id] = {
