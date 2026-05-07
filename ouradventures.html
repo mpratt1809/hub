@@ -97,21 +97,24 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!im
 
 /* ── Items List ── */
 .items-list{display:flex;flex-direction:column;gap:10px}
-.item-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);
-  overflow:hidden;transition:all 0.2s;animation:fadeUp 0.35s ease both}
-.item-card:hover{box-shadow:0 6px 24px rgba(0,0,0,0.07);transform:translateY(-1px)}
-.item-card-inner{padding:16px 18px;cursor:pointer}
-.item-top{display:flex;align-items:flex-start;gap:12px}
-.item-cat-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;transition:border-color 0.2s,background 0.2s;animation:fadeUp 0.3s ease both;
+  margin-bottom:8px;cursor:pointer}
+.item-card:hover{border-color:var(--border2);background:var(--card2)}
+.item-card-summary{display:flex;align-items:center;gap:12px;padding:13px 16px}
+.item-cat-icon{font-size:20px;flex-shrink:0}
 .item-body{flex:1;min-width:0}
-.item-title{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--text);
-  letter-spacing:-0.2px;line-height:1.3}
-.item-subtitle{font-size:12px;color:var(--muted);margin-top:3px;display:flex;
+.item-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.3}
+.item-subtitle{font-size:12px;color:var(--muted);margin-top:4px;display:flex;
   flex-wrap:wrap;gap:6px;align-items:center}
 .item-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap}
-.item-notes{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;
-  border-top:1px solid var(--border);padding-top:8px}
-.item-actions{display:flex;gap:6px;padding:10px 18px 14px;flex-wrap:wrap}
+.item-chevron{font-size:18px;color:var(--muted);flex-shrink:0;line-height:1;font-weight:300}
+.item-card-expanded{padding:0 16px 14px;border-top:1px solid var(--border)}
+.item-notes{font-size:13px;color:var(--muted);line-height:1.5;padding-top:12px;
+  margin-bottom:10px;font-style:italic}
+.item-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.item-added-by-exp{font-size:11px;color:var(--faint);margin-bottom:10px}
+.item-actions{display:flex;gap:6px;flex-wrap:wrap}
 .item-btn{padding:7px 14px;border-radius:9px;border:none;font-size:12px;font-weight:600;
   cursor:pointer;font-family:var(--font-body);transition:all 0.15s}
 .btn-done{background:var(--sage);color:#fff}
@@ -120,8 +123,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!im
 .btn-edit:hover{border-color:var(--border2)}
 .btn-delete{background:var(--rose-soft);color:var(--rose);border:1px solid rgba(212,117,107,0.2)}
 .btn-delete:hover{background:rgba(212,117,107,0.2)}
-.item-added-by{font-size:10px;color:var(--faint);margin-left:auto;flex-shrink:0;
-  align-self:flex-start;padding-top:2px}
+.tag-comedy{background:rgba(255,159,28,0.15);color:#ff9f1c;border:1px solid rgba(255,159,28,0.2)}
+.tag-activity{background:rgba(192,132,252,0.15);color:#c084fc;border:1px solid rgba(192,132,252,0.2)}
 
 /* ── Priority star ── */
 .priority-star{font-size:14px;cursor:pointer;flex-shrink:0;line-height:1;padding:2px}
@@ -271,11 +274,13 @@ const db    = getDatabase(fbApp);
 
 // ── Constants ────────────────────────────────────────────────
 const CATS = [
-  { id:"tv",     label:"TV Shows",   icon:"📺", tagClass:"tag-tv",     tileClass:"cat-tv"     },
-  { id:"movies", label:"Movies",     icon:"🎬", tagClass:"tag-movies", tileClass:"cat-movies"  },
-  { id:"music",  label:"Concerts",   icon:"🎵", tagClass:"tag-music",  tileClass:"cat-music"   },
-  { id:"food",   label:"Restaurants",icon:"🍽️", tagClass:"tag-food",   tileClass:"cat-food"    },
-  { id:"places", label:"Places",     icon:"📍", tagClass:"tag-places", tileClass:"cat-places"  },
+  { id:"tv",      label:"TV Shows",    icon:"📺", tagClass:"tag-tv",      tileClass:"cat-tv"      },
+  { id:"movies",  label:"Movies",      icon:"🎬", tagClass:"tag-movies",  tileClass:"cat-movies"  },
+  { id:"music",   label:"Concerts",    icon:"🎵", tagClass:"tag-music",   tileClass:"cat-music"   },
+  { id:"comedy",  label:"Comedy Shows",icon:"🎤", tagClass:"tag-comedy",  tileClass:"cat-comedy"  },
+  { id:"food",    label:"Restaurants", icon:"🍽️", tagClass:"tag-food",    tileClass:"cat-food"    },
+  { id:"places",  label:"Places",      icon:"📍", tagClass:"tag-places",  tileClass:"cat-places"  },
+  { id:"activity",label:"Activities",  icon:"🎯", tagClass:"tag-activity",tileClass:"cat-activity"},
 ];
 const CAT_MAP = Object.fromEntries(CATS.map(c=>[c.id,c]));
 const STREAMING = ["Netflix","HBO Max","Hulu","Prime","Peacock","Theatre","Other"];
@@ -318,7 +323,16 @@ function openModal(html) {
   document.getElementById("modal-overlay").style.display = "flex";
   document.body.style.overflow = "hidden";
 }
-window.closeModal = function() {
+window.toggleCard = function(id) {
+  const exp  = document.getElementById("exp-"+id);
+  const chev = document.getElementById("chev-"+id);
+  const card = document.getElementById("card-"+id);
+  if (!exp) return;
+  const isOpen = exp.style.display !== "none";
+  exp.style.display  = isOpen ? "none" : "block";
+  chev.textContent   = isOpen ? "›" : "‹";
+  card.style.borderColor = isOpen ? "" : "var(--gold)";
+};
   document.getElementById("modal-overlay").style.display = "none";
   document.body.style.overflow = "";
   editingId = null;
@@ -360,8 +374,16 @@ function render() {
     return matchCat && matchSearch;
   });
 
-  // Sort: priority first, then by ts
-  filtered.sort((a,b) => (b.priority?1:0) - (a.priority?1:0) || (b.ts||0) - (a.ts||0));
+  // Sort: starred first, then by soonest date, undated at bottom
+  filtered.sort((a,b) => {
+    if (b.priority !== a.priority) return (b.priority?1:0) - (a.priority?1:0);
+    const aDate = a.concertDate || a.eventDate || "";
+    const bDate = b.concertDate || b.eventDate || "";
+    if (aDate && bDate) return aDate.localeCompare(bDate);
+    if (aDate) return -1;
+    if (bDate) return 1;
+    return (b.ts||0) - (a.ts||0);
+  });
 
   const tabs = `<div class="view-tabs">
     <button class="view-tab${view==="list"?" active":""}" onclick="setView('list')">✨ Adventures</button>
@@ -385,7 +407,7 @@ function render() {
       const isActive = filterCat === c.id;
       return `<div class="cat-tile ${c.tileClass}${isActive?" active":""}" onclick="setCat('${c.id}')">
         <div class="cat-tile-icon">${c.icon}</div>
-        <div class="cat-tile-label" style="color:var(--${isActive?c.id==="tv"?"sky-blue":c.id==="movies"?"rose":c.id==="music"?"gold":c.id==="food"?"sage":"plum":"muted"})">${c.label}</div>
+        <div class="cat-tile-label" style="color:var(--${isActive?c.id==="tv"?"sky-blue":c.id==="movies"?"rose":c.id==="music"||c.id==="comedy"?"gold":c.id==="food"?"sage":c.id==="activity"?"plum":"plum":"muted"})">${c.label}</div>
         <div class="cat-tile-count">${count} item${count!==1?"s":""}</div>
       </div>`;
     }).join("")}
@@ -411,6 +433,13 @@ function render() {
     CATS.forEach(c => {
       const catItems = filtered.filter(i=>i.category===c.id);
       if (!catItems.length) return;
+      catItems.sort((a,b)=>{
+        const aDate = a.concertDate||a.eventDate||"";
+        const bDate = b.concertDate||b.eventDate||"";
+        if (aDate&&bDate) return aDate.localeCompare(bDate);
+        if (aDate) return -1; if (bDate) return 1;
+        return (b.ts||0)-(a.ts||0);
+      });
       listHTML += `<div class="section-hdr">${c.icon} ${c.label} <span class="section-count">${catItems.length}</span></div>
         <div class="items-list">${catItems.map(itemCardHTML).join("")}</div>`;
     });
@@ -431,25 +460,30 @@ function render() {
 function itemCardHTML(item) {
   const cat = CAT_MAP[item.category] || CATS[0];
   const meta = buildMeta(item);
-  return `<div class="item-card" style="animation-delay:${Math.random()*0.15}s">
-    <div class="item-card-inner">
-      <div class="item-top">
-        <div class="item-cat-icon">${cat.icon}</div>
-        <div class="item-body">
-          <div class="item-title">${esc(item.title)} ${item.priority?`<span class="priority-badge" title="High priority">⭐</span>`:""}</div>
-          <div class="item-subtitle">${meta}</div>
-          ${item.notes?`<div class="item-notes">${esc(item.notes)}</div>`:""}
-          ${item.ticketLink?`<a class="item-link" href="${esc(item.ticketLink)}" target="_blank" rel="noopener">🎟 Tickets ↗</a>`:""}
-          ${item.mapLink?`<a class="item-link" href="${esc(item.mapLink)}" target="_blank" rel="noopener">📍 Maps ↗</a>`:""}
-          ${item.trailerLink?`<a class="item-link" href="${esc(item.trailerLink)}" target="_blank" rel="noopener">▶ Trailer ↗</a>`:""}
-        </div>
-        <div class="item-added-by">${item.addedBy?`by ${esc(item.addedBy)}`:""}</div>
+  const dateStr = item.concertDate||item.eventDate||"";
+  const hasLinks = item.ticketLink||item.mapLink||item.trailerLink;
+  return `<div class="item-card" id="card-${item.id}" style="animation-delay:${Math.random()*0.1}s" onclick="toggleCard('${item.id}')">
+    <div class="item-card-summary">
+      <div class="item-cat-icon">${cat.icon}</div>
+      <div class="item-body">
+        <div class="item-title">${esc(item.title)}${item.priority?` <span class="priority-badge">⭐</span>`:""}</div>
+        <div class="item-subtitle">${meta}</div>
       </div>
+      <div class="item-chevron" id="chev-${item.id}">›</div>
     </div>
-    <div class="item-actions">
-      <button class="item-btn btn-done"   onclick="openDoneModal('${item.id}')">✅ Mark Done</button>
-      <button class="item-btn btn-edit"   onclick="openEditModal('${item.id}')">✏️ Edit</button>
-      <button class="item-btn btn-delete" onclick="confirmDelete('${item.id}')">🗑</button>
+    <div class="item-card-expanded" id="exp-${item.id}" style="display:none">
+      ${item.notes?`<div class="item-notes">${esc(item.notes)}</div>`:""}
+      ${hasLinks?`<div class="item-links">
+        ${item.ticketLink?`<a class="item-link" href="${esc(item.ticketLink)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🎟 Tickets ↗</a>`:""}
+        ${item.mapLink?`<a class="item-link" href="${esc(item.mapLink)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 Maps ↗</a>`:""}
+        ${item.trailerLink?`<a class="item-link" href="${esc(item.trailerLink)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">▶ Trailer ↗</a>`:""}
+      </div>`:""}
+      ${item.addedBy?`<div class="item-added-by-exp">added by ${esc(item.addedBy)}</div>`:""}
+      <div class="item-actions" onclick="event.stopPropagation()">
+        <button class="item-btn btn-done"   onclick="openDoneModal('${item.id}')">✅ Mark Done</button>
+        <button class="item-btn btn-edit"   onclick="openEditModal('${item.id}')">✏️ Edit</button>
+        <button class="item-btn btn-delete" onclick="confirmDelete('${item.id}')">🗑</button>
+      </div>
     </div>
   </div>`;
 }
