@@ -333,6 +333,7 @@ window.toggleCard = function(id) {
   chev.textContent   = isOpen ? "›" : "‹";
   card.style.borderColor = isOpen ? "" : "var(--gold)";
 };
+window.closeModal = function() {
   document.getElementById("modal-overlay").style.display = "none";
   document.body.style.overflow = "";
   editingId = null;
