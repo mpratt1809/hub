@@ -124,6 +124,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!im
 .btn-delete{background:var(--rose-soft);color:var(--rose);border:1px solid rgba(212,117,107,0.2)}
 .btn-delete:hover{background:rgba(212,117,107,0.2)}
 .tag-comedy{background:rgba(255,159,28,0.15);color:#ff9f1c;border:1px solid rgba(255,159,28,0.2)}
+.scheduled-badge{font-size:12px;margin-left:4px}
+.priority-badge{font-size:12px;margin-left:4px}
 .tag-activity{background:rgba(192,132,252,0.15);color:#c084fc;border:1px solid rgba(192,132,252,0.2)}
 
 /* ── Priority star ── */
@@ -461,13 +463,13 @@ function render() {
 function itemCardHTML(item) {
   const cat = CAT_MAP[item.category] || CATS[0];
   const meta = buildMeta(item);
-  const dateStr = item.concertDate||item.eventDate||"";
+  const dateStr = item.scheduledDate||item.concertDate||item.eventDate||"";
   const hasLinks = item.ticketLink||item.mapLink||item.trailerLink;
   return `<div class="item-card" id="card-${item.id}" style="animation-delay:${Math.random()*0.1}s" onclick="toggleCard('${item.id}')">
     <div class="item-card-summary">
       <div class="item-cat-icon">${cat.icon}</div>
       <div class="item-body">
-        <div class="item-title">${esc(item.title)}${item.priority?` <span class="priority-badge">⭐</span>`:""}</div>
+        <div class="item-title">${esc(item.title)}${item.priority?` <span class="priority-badge">⭐</span>`:""}${item.scheduled?` <span class="scheduled-badge">📅</span>`:""}</div>
         <div class="item-subtitle">${meta}</div>
       </div>
       <div class="item-chevron" id="chev-${item.id}">›</div>
@@ -709,6 +711,25 @@ window.submitForm = function() {
     base.location  = document.getElementById("f-location")?.value.trim()  || "";
     base.placeType = document.getElementById("f-placeType")?.value        || "";
     base.mapLink   = document.getElementById("f-mapLink")?.value.trim()   || "";
+  }
+
+  const scheduledDate = document.getElementById("f-scheduledDate")?.value || "";
+  const scheduledTime = document.getElementById("f-scheduledTime")?.value || "";
+  const scheduled     = document.getElementById("f-scheduled")?.checked || false;
+
+  // Validate: if marking as scheduled, date and time are required
+  if (scheduled && (!scheduledDate || !scheduledTime)) {
+    alert("Please set a date and time before marking as scheduled.");
+    return;
+  }
+
+  base.scheduledDate = scheduledDate;
+  base.scheduledTime = scheduledTime;
+  base.scheduled     = scheduled;
+
+  // Also update concertDate/eventDate for existing date fields to stay in sync
+  if (scheduledDate && (cat === "music" || cat === "comedy")) {
+    base.concertDate = scheduledDate;
   }
 
   // Preserve done state and memory fields if editing
