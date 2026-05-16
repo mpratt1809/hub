@@ -291,7 +291,7 @@ function syncToCalendar(item) {
   const emoji = item.category==="music"?"🎵":item.category==="comedy"?"🎤":
                 item.category==="food"?"🍽️":item.category==="places"?"📍":
                 item.category==="activity"?"🎯":item.category==="movies"?"🎬":"✨";
-  const notes = [item.venue,item.location,item.notes].filter(Boolean).join(" · ");
+  const location = [item.venue,item.location].filter(Boolean).join(" · ");
   const evId  = calEventId(item.id);
   set(ref(calDb,"events/"+evId), {
     id: evId, title: emoji+" "+item.title,
@@ -299,7 +299,9 @@ function syncToCalendar(item) {
     time: item.scheduledTime||"",
     category:"date", member:"Both of Us",
     allDay: !item.scheduledTime,
-    recurring:"none", notes: notes||"",
+    recurring:"none",
+    location: location||"",
+    notes: item.notes||"",
     adventureId: item.id,
   });
 }
