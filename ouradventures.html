@@ -274,6 +274,37 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db    = getDatabase(fbApp);
 
+const calConfig = {
+  apiKey: "AIzaSyAGkrJ_68aFs2lYDKdp9ERrrRqfYggUrHk",
+  authDomain: "family-calendar-e84b8.firebaseapp.com",
+  databaseURL: "https://family-calendar-e84b8-default-rtdb.firebaseio.com",
+  projectId: "family-calendar-e84b8",
+  storageBucket: "family-calendar-e84b8.firebasestorage.app",
+  messagingSenderId: "880082862665",
+  appId: "1:880082862665:web:44c60e52b2cdb9ff537598"
+};
+const calApp = initializeApp(calConfig, "calendar");
+const calDb  = getDatabase(calApp);
+
+function calEventId(id) { return "adv-" + id; }
+function syncToCalendar(item) {
+  const emoji = item.category==="music"?"🎵":item.category==="comedy"?"🎤":
+                item.category==="food"?"🍽️":item.category==="places"?"📍":
+                item.category==="activity"?"🎯":item.category==="movies"?"🎬":"✨";
+  const notes = [item.venue,item.location,item.notes].filter(Boolean).join(" · ");
+  const evId  = calEventId(item.id);
+  set(ref(calDb,"events/"+evId), {
+    id: evId, title: emoji+" "+item.title,
+    date: item.scheduledDate||item.concertDate||item.eventDate||"",
+    time: item.scheduledTime||"",
+    category:"date", member:"Both of Us",
+    allDay: !item.scheduledTime,
+    recurring:"none", notes: notes||"",
+    adventureId: item.id,
+  });
+}
+function removeFromCalendar(id) { remove(ref(calDb,"events/"+calEventId(id))); }
+
 // ── Constants ────────────────────────────────────────────────
 const CATS = [
   { id:"tv",      label:"TV Shows",    icon:"📺", tagClass:"tag-tv",      tileClass:"cat-tv"      },
@@ -585,6 +616,14 @@ function buildFormHTML(cat, item) {
       </div>
     </div>
     <div id="cat-fields">${catFields}</div>
+    <div class="form-row">
+      <div class="form-group"><label class="lbl">Date Scheduled</label>
+        <input class="inp" id="f-scheduledDate" type="date" value="${esc(item?.scheduledDate||item?.concertDate||item?.eventDate||"")}"/>
+      </div>
+      <div class="form-group"><label class="lbl">Time</label>
+        <input class="inp" id="f-scheduledTime" type="time" value="${esc(item?.scheduledTime||item?.time||"")}"/>
+      </div>
+    </div>
     <div class="form-group">
       <label class="lbl">Notes</label>
       <textarea class="ta" id="f-notes" placeholder="Any thoughts or details…">${esc(item?.notes||"")}</textarea>
@@ -593,6 +632,12 @@ function buildFormHTML(cat, item) {
       <label class="priority-toggle">
         <input type="checkbox" id="f-priority" ${item?.priority?"checked":""}/>
         ⭐ High Priority
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="priority-toggle">
+        <input type="checkbox" id="f-scheduled" ${item?.scheduled?"checked":""}/>
+        📅 Scheduled — add to Family Calendar
       </label>
     </div>
     <div class="modal-actions">
@@ -743,8 +788,17 @@ window.submitForm = function() {
   }
 
   saveItem(base);
+
+  // Sync to Family Calendar
+  if (base.scheduled) {
+    syncToCalendar(base);
+    toast(editingId ? "✅ Updated & calendar synced! 📅" : "✨ Added & calendar synced! 📅");
+  } else {
+    if (editingId) removeFromCalendar(base.id);
+    toast(editingId ? "✅ Updated!" : "✨ Adventure added!");
+  }
+
   closeModal();
-  toast(editingId ? "✅ Updated!" : "✨ Adventure added!");
 };
 
 // ── Mark Done Modal ───────────────────────────────────────────
