@@ -270,6 +270,33 @@
     .detail-completed { color: var(--success); font-size: 11px; }
     .detail-cardio-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
     .detail-notes { margin-top: 10px; font-size: 12px; color: var(--muted); font-style: italic; }
+    .detail-edit-btn { margin-top: 12px; padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; }
+    .detail-edit-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    /* Edit form styles */
+    .hedit-wrap { animation: fadeIn 0.2s ease; }
+    .hedit-section { margin-bottom: 16px; }
+    .hedit-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; display: block; }
+    .hedit-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+    .hedit-inp { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text); font-family: var(--font-body); }
+    .hedit-inp:focus { outline: none; border-color: var(--accent2); }
+    .hedit-inp.sm { width: 70px; }
+    .hedit-inp.md { width: 100px; }
+    .hedit-inp.lg { flex: 1; min-width: 140px; }
+    .hedit-sel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 8px; font-size: 13px; color: var(--text); font-family: var(--font-body); cursor: pointer; }
+    .hedit-sel:focus { outline: none; border-color: var(--accent2); }
+    .hedit-ex-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+    .hedit-ex-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .hedit-ex-name { font-size: 13px; font-weight: 600; color: var(--accent2); flex: 1; }
+    .hedit-set-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; font-size: 12px; color: var(--muted); }
+    .hedit-rm { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 15px; padding: 2px 6px; border-radius: 6px; line-height: 1; }
+    .hedit-rm:hover { background: rgba(255,92,92,0.1); }
+    .hedit-add-btn { background: none; border: 1px dashed rgba(71,200,255,0.3); border-radius: 8px; padding: 7px 14px; font-size: 12px; color: var(--accent2); font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .hedit-add-btn:hover { border-color: var(--accent2); background: rgba(71,200,255,0.06); }
+    .hedit-actions { display: flex; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .hedit-save { background: var(--accent); color: #0a0a0f; border: none; border-radius: 10px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; }
+    .hedit-save:hover { filter: brightness(1.1); }
+    .hedit-cancel { background: none; border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; font-family: var(--font-body); }
+    .hedit-cancel:hover { border-color: var(--border2); color: var(--text); }
     .cardio-tag {
       display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; margin: 2px 2px 0 0;
       background: rgba(71,200,255,0.12); border: 1px solid rgba(71,200,255,0.3);
@@ -2266,6 +2293,7 @@ function renderHistory(sessions) {
           ${exDetail}
           ${cardioDetail}
           ${sessionNoteDetail}
+          <button class="detail-edit-btn" onclick="openHistoryEdit(${idx})">✏️ Edit Session</button>
         </div>
       </div>`;
   }).join("");
@@ -2278,6 +2306,183 @@ function toggleHistoryDetail(idx) {
   const open = detail.classList.toggle("open");
   if (chev) chev.style.transform = open ? "rotate(180deg)" : "";
 }
+
+// ── History Edit ────────────────────────────────────────────────
+function openHistoryEdit(idx) {
+  const s = allSessions[idx];
+  if (!s) return;
+  const detail = document.getElementById(`hdetail-${idx}`);
+  if (!detail) return;
+
+  const dayOptions = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
+    .map(d => `<option value="${d}" ${s.day===d?"selected":""}>${d.charAt(0).toUpperCase()+d.slice(1)}</option>`).join("");
+
+  const exBlocks = (s.exercises||[]).map((ex,ei) => buildEditExBlock(ei, ex)).join("");
+
+  const cardioBlocks = (s.cardio||[]).map((c,ci) => buildEditCardioBlock(ci, c)).join("");
+
+  detail.innerHTML = `
+    <div class="hedit-wrap" id="hedit-${idx}">
+      <div class="hedit-section">
+        <div class="hedit-row">
+          <div><label class="hedit-label">Date</label>
+            <input class="hedit-inp md" id="hedit-date-${idx}" type="date" value="${s.date||""}"/></div>
+          <div><label class="hedit-label">Day</label>
+            <select class="hedit-sel" id="hedit-day-${idx}">${dayOptions}</select></div>
+          <div style="flex:1"><label class="hedit-label">Focus</label>
+            <input class="hedit-inp lg" id="hedit-focus-${idx}" value="${esc(s.focus||"")}"/></div>
+        </div>
+      </div>
+      <div class="hedit-section">
+        <label class="hedit-label">Exercises</label>
+        <div id="hedit-exlist-${idx}">${exBlocks}</div>
+        <button class="hedit-add-btn" onclick="heditAddEx(${idx})">+ Add Exercise</button>
+      </div>
+      <div class="hedit-section">
+        <label class="hedit-label">Cardio & Activities</label>
+        <div id="hedit-cardiolist-${idx}">${cardioBlocks}</div>
+        <button class="hedit-add-btn" onclick="heditAddCardio(${idx})">+ Add Cardio</button>
+      </div>
+      <div class="hedit-section">
+        <label class="hedit-label">Notes</label>
+        <textarea class="hedit-inp lg" id="hedit-notes-${idx}" rows="2" style="width:100%">${esc(s.notes||"")}</textarea>
+      </div>
+      <div class="hedit-actions">
+        <button class="hedit-save" onclick="saveHistoryEdit(${idx})">💾 Save Changes</button>
+        <button class="hedit-cancel" onclick="cancelHistoryEdit(${idx})">Cancel</button>
+      </div>
+    </div>`;
+}
+
+function buildEditExBlock(ei, ex) {
+  const sets = (ex.setData||[]).map((set,si) => `
+    <div class="hedit-set-row" id="hedit-set-${ei}-${si}">
+      <span style="min-width:36px">Set ${si+1}</span>
+      <input class="hedit-inp sm" id="hedit-w-${ei}-${si}" value="${set.weight||""}" placeholder="lbs" type="number" step="2.5"/>
+      <input class="hedit-inp sm" id="hedit-r-${ei}-${si}" value="${set.reps||""}" placeholder="reps" type="number"/>
+      <button class="hedit-rm" onclick="document.getElementById('hedit-set-${ei}-${si}').remove()">✕</button>
+    </div>`).join("");
+  return `
+    <div class="hedit-ex-block" id="hedit-ex-${ei}">
+      <div class="hedit-ex-name-row">
+        <input class="hedit-inp lg hedit-ex-name" id="hedit-exname-${ei}" value="${esc(ex.name||"")}"/>
+        <button class="hedit-rm" onclick="document.getElementById('hedit-ex-${ei}').remove()">✕</button>
+      </div>
+      <div id="hedit-sets-${ei}">${sets}</div>
+      <button class="hedit-add-btn" style="margin-top:4px;font-size:11px" onclick="heditAddSet(${ei})">+ Set</button>
+    </div>`;
+}
+
+function buildEditCardioBlock(ci, c) {
+  const actOpts = CARDIO_ACTIVITIES.map(a =>
+    `<option value="${a.name}" ${c.activity===a.name?"selected":""}>${a.name}</option>`).join("");
+  return `
+    <div class="hedit-row" id="hedit-cardio-${ci}">
+      <select class="hedit-sel" id="hedit-cact-${ci}">${actOpts}</select>
+      <input class="hedit-inp sm" id="hedit-cdur-${ci}" value="${c.duration||""}" placeholder="min" type="number"/>
+      <input class="hedit-inp sm" id="hedit-cdist-${ci}" value="${c.distance||""}" placeholder="dist" type="number" step="0.1"/>
+      <input class="hedit-inp md" id="hedit-cnotes-${ci}" value="${esc(c.notes||"")}" placeholder="notes"/>
+      <button class="hedit-rm" onclick="document.getElementById('hedit-cardio-${ci}').remove()">✕</button>
+    </div>`;
+}
+
+window.heditAddEx = function(idx) {
+  const list = document.getElementById(`hedit-exlist-${idx}`);
+  if (!list) return;
+  const ei = list.querySelectorAll(".hedit-ex-block").length;
+  const div = document.createElement("div");
+  div.innerHTML = buildEditExBlock(ei, {name:"",setData:[{weight:"",reps:""}]});
+  list.appendChild(div.firstElementChild);
+};
+
+window.heditAddCardio = function(idx) {
+  const list = document.getElementById(`hedit-cardiolist-${idx}`);
+  if (!list) return;
+  const ci = list.querySelectorAll(".hedit-row").length;
+  const div = document.createElement("div");
+  div.innerHTML = buildEditCardioBlock(ci, {activity:CARDIO_ACTIVITIES[0].name,duration:"",distance:"",notes:""});
+  list.appendChild(div.firstElementChild);
+};
+
+window.heditAddSet = function(ei) {
+  const list = document.getElementById(`hedit-sets-${ei}`);
+  if (!list) return;
+  const si = list.querySelectorAll(".hedit-set-row").length;
+  const div = document.createElement("div");
+  div.className = "hedit-set-row"; div.id = `hedit-set-${ei}-${si}`;
+  div.innerHTML = `
+    <span style="min-width:36px">Set ${si+1}</span>
+    <input class="hedit-inp sm" id="hedit-w-${ei}-${si}" placeholder="lbs" type="number" step="2.5"/>
+    <input class="hedit-inp sm" id="hedit-r-${ei}-${si}" placeholder="reps" type="number"/>
+    <button class="hedit-rm" onclick="this.closest('.hedit-set-row').remove()">✕</button>`;
+  list.appendChild(div);
+};
+
+window.openHistoryEdit   = openHistoryEdit;
+window.heditAddEx        = window.heditAddEx;
+window.heditAddCardio    = window.heditAddCardio;
+window.heditAddSet       = window.heditAddSet;
+
+window.cancelHistoryEdit = function(idx) {
+  applyHistFilters();
+};
+
+window.saveHistoryEdit = async function(idx) {
+  const s = allSessions[idx];
+  if (!s) return;
+
+  const newDate  = document.getElementById(`hedit-date-${idx}`)?.value || s.date;
+  const newDay   = document.getElementById(`hedit-day-${idx}`)?.value  || s.day;
+  const newFocus = document.getElementById(`hedit-focus-${idx}`)?.value.trim() || s.focus;
+  const newNotes = document.getElementById(`hedit-notes-${idx}`)?.value.trim() || "";
+
+  // Collect exercises
+  const exercises = [];
+  document.querySelectorAll(`#hedit-exlist-${idx} .hedit-ex-block`).forEach((block, ei) => {
+    const name = document.getElementById(`hedit-exname-${ei}`)?.value.trim();
+    if (!name) return;
+    const setData = [];
+    block.querySelectorAll(".hedit-set-row").forEach((row, si) => {
+      const w = parseFloat(document.getElementById(`hedit-w-${ei}-${si}`)?.value);
+      const r = parseInt(document.getElementById(`hedit-r-${ei}-${si}`)?.value);
+      if (!isNaN(w) || !isNaN(r)) {
+        setData.push({ set: si+1, weight: isNaN(w)?"":w, reps: isNaN(r)?"":r, id: uid(), completed: true });
+      }
+    });
+    exercises.push({ name, setData });
+  });
+
+  // Collect cardio
+  const cardio = [];
+  document.querySelectorAll(`#hedit-cardiolist-${idx} .hedit-row`).forEach((row, ci) => {
+    const activity = document.getElementById(`hedit-cact-${ci}`)?.value;
+    if (!activity) return;
+    const duration = document.getElementById(`hedit-cdur-${ci}`)?.value || "";
+    const distance = document.getElementById(`hedit-cdist-${ci}`)?.value || "";
+    const notes    = document.getElementById(`hedit-cnotes-${ci}`)?.value.trim() || "";
+    const actDef   = CARDIO_ACTIVITIES.find(a=>a.name===activity);
+    cardio.push({ activity, duration, distance, unit: actDef?.unit||"", notes, type: activity });
+  });
+
+  // Recalculate volume
+  const volume = exercises.reduce((acc, ex) =>
+    acc + (ex.setData||[]).reduce((a,s) => a + ((parseFloat(s.weight)||0) * (parseInt(s.reps)||0)), 0), 0);
+
+  const updated = { ...s, date: newDate, day: newDay, focus: newFocus, notes: newNotes,
+    exercises, cardio, volume: Math.round(volume) };
+
+  try {
+    await setDoc(doc(db, "workouts", s.id), updated);
+    // Update local state
+    allSessions[idx] = updated;
+    showToast("✅ Session updated!");
+    // Recalculate PRs and refresh history
+    await loadHistory(histUser);
+    await loadPRs(histUser);
+  } catch(e) {
+    showToast("❌ Save failed: " + e.message);
+  }
+};
 
 function updateHistStats(sessions) {
   const nonDeload = sessions.filter(s => !s.deloadSession);
