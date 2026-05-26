@@ -761,6 +761,7 @@ const SETS_OPTIONS = [1,2,3,4,5];
 const REPS_OPTIONS = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 const GYM_DAYS     = ["sunday","monday","tuesday","thursday","friday"];
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function uid(){ return Math.random().toString(36).slice(2,10); }
 
 // ─────────────────────────────────────────────────────────────
 // STATE
