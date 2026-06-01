@@ -888,6 +888,24 @@ window.openEditDay  = openEditDay;
 window.closeEditDay = closeEditDay;
 
 // ── Boot ──────────────────────────────────────────────────────
+async function loadSuppInfo() {
+  try {
+    const snap = await getDocs(collection(db, "supplement_info"));
+    if (snap.empty) {
+      for (const s of SUPPLEMENT_INFO_DEFAULTS) {
+        await setDoc(doc(db, "supplement_info", s.id), s);
+      }
+      suppInfoData = [...SUPPLEMENT_INFO_DEFAULTS];
+    } else {
+      suppInfoData = snap.docs.map(d => ({...d.data()}));
+    }
+  } catch(e) {
+    console.warn("suppInfo load failed:", e);
+    suppInfoData = [...SUPPLEMENT_INFO_DEFAULTS];
+  }
+  if (currentView === "info") renderInfo();
+}
+
 document.getElementById("dateLabel").textContent =
   new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
 
