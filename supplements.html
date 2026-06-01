@@ -853,6 +853,138 @@ function renderEditDay() {
 }
 
 
+// ── Render: Info ──────────────────────────────────────────────
+function renderInfo() {
+  const data = suppInfoData.length ? suppInfoData : SUPPLEMENT_INFO_DEFAULTS;
+  const active = data.filter(s => !s.archived);
+  const archived = data.filter(s => s.archived);
+
+  function infoCard(s, isArchived) {
+    const whoColor = s.who === "Both" ? "var(--success)" : s.who === "Sky only" ? "var(--sky)" : "var(--meagan)";
+    return `
+    <div class="info-card${isArchived?" archived-card":""}" id="icard-${s.id}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:22px">${s.emoji}</span>
+          <span style="font-size:15px;font-weight:700">${s.name}</span>
+          ${isArchived?'<span style="font-size:10px;background:rgba(255,92,92,0.15);color:#ff5c5c;padding:2px 8px;border-radius:6px;font-weight:600">ARCHIVED</span>':""}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;background:${whoColor}22;color:${whoColor};border:1px solid ${whoColor}44">${s.who}</span>
+          <button onclick="openSuppEdit('${s.id}')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--muted);cursor:pointer;font-family:inherit">✏️ Edit</button>
+        </div>
+      </div>
+      <div id="icard-view-${s.id}">
+        <div class="info-grid">
+          <div class="info-cell"><div class="info-cell-label">Brand</div><div class="info-cell-val">${s.brand}</div></div>
+          <div class="info-cell"><div class="info-cell-label">Daily Dose</div><div class="info-cell-val">${s.dailyDose}</div></div>
+          <div class="info-cell"><div class="info-cell-label">Timing</div><div class="info-cell-val">${s.timing}</div></div>
+          <div class="info-cell"><div class="info-cell-label">Buy At</div><div class="info-cell-val">${s.buyAt}</div></div>
+        </div>
+        <div class="info-cell" style="margin-top:8px"><div class="info-cell-label">Purpose</div><div class="info-cell-val" style="color:var(--text)">${s.purpose}</div></div>
+        ${s.notes?`<div class="info-cell" style="margin-top:6px"><div class="info-cell-label">📝 Notes</div><div class="info-cell-val" style="color:var(--warn)">${s.notes}</div></div>`:""}
+      </div>
+      <div id="icard-edit-${s.id}" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Name</label>
+            <input class="edit-inp" id="ie-name-${s.id}" value="${s.name}"/></div>
+          <div><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Emoji</label>
+            <input class="edit-inp" id="ie-emoji-${s.id}" value="${s.emoji}" style="width:60px"/></div>
+        </div>
+        <div style="margin-bottom:8px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Brand</label>
+          <input class="edit-inp" id="ie-brand-${s.id}" value="${s.brand}" style="width:100%"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Daily Dose</label>
+            <input class="edit-inp" id="ie-dose-${s.id}" value="${s.dailyDose}"/></div>
+          <div><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Who</label>
+            <select class="edit-inp" id="ie-who-${s.id}">
+              <option value="Both" ${s.who==="Both"?"selected":""}>Both</option>
+              <option value="Sky only" ${s.who==="Sky only"?"selected":""}>Sky only</option>
+              <option value="Meagan only" ${s.who==="Meagan only"?"selected":""}>Meagan only</option>
+            </select></div>
+        </div>
+        <div style="margin-bottom:8px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Timing</label>
+          <input class="edit-inp" id="ie-timing-${s.id}" value="${s.timing}" style="width:100%"/></div>
+        <div style="margin-bottom:8px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Buy At</label>
+          <input class="edit-inp" id="ie-buyat-${s.id}" value="${s.buyAt}" style="width:100%"/></div>
+        <div style="margin-bottom:8px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Purpose</label>
+          <textarea class="edit-inp" id="ie-purpose-${s.id}" rows="3" style="width:100%;resize:vertical">${s.purpose}</textarea></div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Notes</label>
+          <textarea class="edit-inp" id="ie-notes-${s.id}" rows="2" style="width:100%;resize:vertical">${s.notes||""}</textarea></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="saveSuppEdit('${s.id}')" style="background:var(--success);color:#0a0a0f;border:none;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">💾 Save</button>
+          <button onclick="closeSuppEdit('${s.id}')" style="background:none;border:1px solid var(--border);border-radius:9px;padding:8px 14px;font-size:13px;color:var(--muted);cursor:pointer;font-family:inherit">Cancel</button>
+          ${isArchived
+            ? `<button onclick="unarchiveSupp('${s.id}')" style="background:rgba(74,222,128,0.12);color:var(--success);border:1px solid rgba(74,222,128,0.2);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">♻️ Restore</button>`
+            : `<button onclick="archiveSupp('${s.id}')" style="background:rgba(255,92,92,0.12);color:#ff5c5c;border:1px solid rgba(255,92,92,0.2);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🗄 Archive</button>`}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const showArchived = document.getElementById("show-archived-toggle")?.checked;
+  document.getElementById("tab_info").innerHTML = `
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Tap ✏️ Edit on any supplement to update its details. Changes apply going forward only.</p>
+    ${active.map(s=>infoCard(s,false)).join("")}
+    <div style="margin-top:20px;display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="show-archived-toggle" onchange="renderInfo()" style="accent-color:var(--success);width:15px;height:15px" ${showArchived?"checked":""}/>
+      <label for="show-archived-toggle" style="font-size:12px;color:var(--muted);cursor:pointer">Show archived supplements</label>
+    </div>
+    ${showArchived && archived.length ? `
+      <div style="margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Archived</div>
+        ${archived.map(s=>infoCard(s,true)).join("")}
+      </div>` : ""}`;
+}
+
+window.openSuppEdit = function(id) {
+  document.getElementById("icard-view-"+id).style.display = "none";
+  document.getElementById("icard-edit-"+id).style.display = "block";
+};
+window.closeSuppEdit = function(id) {
+  document.getElementById("icard-view-"+id).style.display = "block";
+  document.getElementById("icard-edit-"+id).style.display = "none";
+};
+window.saveSuppEdit = async function(id) {
+  const idx = suppInfoData.findIndex(s=>s.id===id);
+  if (idx===-1) return;
+  const updated = {
+    ...suppInfoData[idx],
+    name:      document.getElementById("ie-name-"+id)?.value.trim()    || suppInfoData[idx].name,
+    emoji:     document.getElementById("ie-emoji-"+id)?.value.trim()   || suppInfoData[idx].emoji,
+    brand:     document.getElementById("ie-brand-"+id)?.value.trim()   || suppInfoData[idx].brand,
+    dailyDose: document.getElementById("ie-dose-"+id)?.value.trim()    || suppInfoData[idx].dailyDose,
+    who:       document.getElementById("ie-who-"+id)?.value            || suppInfoData[idx].who,
+    timing:    document.getElementById("ie-timing-"+id)?.value.trim()  || suppInfoData[idx].timing,
+    buyAt:     document.getElementById("ie-buyat-"+id)?.value.trim()   || suppInfoData[idx].buyAt,
+    purpose:   document.getElementById("ie-purpose-"+id)?.value.trim() || suppInfoData[idx].purpose,
+    notes:     document.getElementById("ie-notes-"+id)?.value.trim()   || "",
+  };
+  try {
+    await setDoc(doc(db, "supplement_info", id), updated);
+    suppInfoData[idx] = updated;
+    renderInfo();
+    const t = document.getElementById("toast");
+    if(t){ t.textContent="✅ Saved!"; t.style.display="block"; setTimeout(()=>t.style.display="none",2000); }
+  } catch(e) { alert("Save failed: "+e.message); }
+};
+window.archiveSupp = async function(id) {
+  const idx = suppInfoData.findIndex(s=>s.id===id);
+  if (idx===-1) return;
+  const updated = {...suppInfoData[idx], archived:true};
+  await setDoc(doc(db,"supplement_info",id), updated);
+  suppInfoData[idx] = updated;
+  renderInfo();
+};
+window.unarchiveSupp = async function(id) {
+  const idx = suppInfoData.findIndex(s=>s.id===id);
+  if (idx===-1) return;
+  const updated = {...suppInfoData[idx], archived:false};
+  await setDoc(doc(db,"supplement_info",id), updated);
+  suppInfoData[idx] = updated;
+  renderInfo();
+};
+
 // ── Render all ────────────────────────────────────────────────
 function renderAll() {
   renderPersonRow();
