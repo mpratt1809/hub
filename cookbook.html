@@ -163,8 +163,31 @@ const db=firebase.database();
 const CATS=["All Recipes","Breakfast","Lunch","Dinner","Healthy Desserts","Desserts","Snacks","Sauces","Beverages — Alcoholic","Beverages — Non-Alcoholic"];
 const UNITS=["","tsp","tbsp","cup","oz","lb","g","kg","ml","L","pinch","dash","whole","slice","clove","can","bunch","pkg"];
 const MEMBERS=["Sky","Meagan","Grandma","Grandpa","Mom","Dad","Custom"];
-// TODO: replace with your actual pratt-automation-api Worker URL (see the accompanying worker-recipe-endpoint.js route)
-const AI_ENDPOINT="https://pratt-automation-api.YOUR-SUBDOMAIN.workers.dev/structure-recipe";
+// Your Worker just relays whatever request body it's given straight to Anthropic —
+// same pattern as the Skylane receipt scanner — so this file builds the full
+// Anthropic request itself and unpacks the response. No Worker changes needed.
+const AI_ENDPOINT="https://pratt-automation-api.mpratt1809.workers.dev/";
+const RECIPE_SYSTEM_PROMPT=`You are a recipe structuring assistant for a home cookbook app. You will receive a raw, unstructured voice transcript of someone narrating a recipe while cooking — it may be out of order, include false starts, or mix ingredients and steps together.
+
+Extract and return ONLY valid JSON in this exact shape:
+{
+  "title": "string — infer a reasonable title if not explicitly stated",
+  "category": "one of exactly: Breakfast, Lunch, Dinner, Healthy Desserts, Desserts, Snacks, Sauces, Beverages — Alcoholic, Beverages — Non-Alcoholic",
+  "description": "string or empty",
+  "prepTime": "string or empty, e.g. '15 min' — ONLY if stated",
+  "cookTime": "string or empty, e.g. '45 min' — ONLY if stated",
+  "servings": number or null — ONLY if explicitly stated; do NOT estimate or infer from ingredient quantities,
+  "glutenFree": true, false, or null — ONLY if explicitly stated or unambiguous from named ingredients (e.g. 'gluten-free flour'); otherwise null. Do NOT guess,
+  "ingredients": [{"amount": "string, exactly as spoken", "unit": "one of exactly: '', tsp, tbsp, cup, oz, lb, g, kg, ml, L, pinch, dash, whole, slice, clove, can, bunch, pkg — use '' if nothing fits", "name": "string"}],
+  "steps": ["each as a single ordered instruction string, logically sequenced even if narrated out of order"],
+  "notes": "string or empty — anything mentioned that didn't fit elsewhere"
+}
+
+Rules:
+- Preserve amounts exactly as spoken; do not invent quantities that weren't mentioned.
+- Match "unit" to the closest option in the allowed list; use "" if nothing fits.
+- servings and glutenFree are the two fields where guessing is NOT allowed — leave null if unclear.
+- Return nothing but the JSON object — no preamble, no markdown fences, no explanation.`;
 let recs=[],synced=false,view="grid",sq="",cf="All Recipes",gf=false,did=null,eid=null,dlid=null,tt=null;
 let voiceOn=false,recog=null,vfinal="",vdraft=null;
 db.ref("recipes").on("value",snap=>{const v=snap.val();recs=v?Object.values(v):[];synced=true;ra();});
@@ -281,9 +304,12 @@ voiceOn=false;
 const btn=document.getElementById("vprocbtn");
 if(btn){btn.disabled=true;btn.textContent="Organizing…";}
 try{
-const res=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({transcript:txt})});
+const res=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1500,system:RECIPE_SYSTEM_PROMPT,messages:[{role:"user",content:txt}]})});
 if(!res.ok)throw new Error("bad response");
-const draft=await res.json();
+const data=await res.json();
+const rawText=data.content?.[0]?.text||"{}";
+const clean=rawText.replace(/```json|```/g,"").trim();
+const draft=JSON.parse(clean);
 vdraft=draft;
 eid=null;
 view="form";
