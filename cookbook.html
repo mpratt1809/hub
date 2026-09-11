@@ -9,12 +9,12 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0a0f;--bg2:#10101a;--card:#181824;--card2:#1e1e2e;
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
-  --text:#e8e8ef;--text2:#c0c0d0;--text-dim:#6a6a82;--text-faint:#4a4a60;
-  --orange:#ff7c43;--og:rgba(255,124,67,0.12);--os:rgba(255,124,67,0.08);
-  --green:#4ade80;--danger:#ff5c5c;
-  --fd:'Playfair Display',Georgia,serif;--f:'DM Sans',-apple-system,sans-serif;--r:16px;
+--bg:#0a0a0f;--bg2:#10101a;--card:#181824;--card2:#1e1e2e;
+--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
+--text:#e8e8ef;--text2:#c0c0d0;--text-dim:#6a6a82;--text-faint:#4a4a60;
+--orange:#ff7c43;--og:rgba(255,124,67,0.12);--os:rgba(255,124,67,0.08);
+--green:#4ade80;--danger:#ff5c5c;
+--fd:'Playfair Display',Georgia,serif;--f:'DM Sans',-apple-system,sans-serif;--r:16px;
 }
 body{font-family:var(--f);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 10%,rgba(255,124,67,0.04) 0%,transparent 70%);pointer-events:none}
@@ -25,6 +25,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--orange)!
 @keyframes si{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
 @keyframes ti{from{opacity:0;transform:translateY(16px) translateX(-50%)}to{opacity:1;transform:translateY(0) translateX(-50%)}}
 @keyframes sh{0%,100%{opacity:0.4}50%{opacity:0.7}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.vpulse{animation:pulse 1.4s ease-in-out infinite}
 .hdr{background:linear-gradient(180deg,rgba(255,124,67,0.07) 0%,transparent 100%);padding:20px 24px 16px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .hdr-in{max-width:1000px;margin:0 auto}
 .hdr-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
@@ -41,6 +43,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--orange)!
 .sync{font-size:11px;color:var(--green);background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);border-radius:20px;padding:3px 10px;font-weight:600}
 .btn-add{background:var(--orange);color:#0a0a0f;border:none;border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all 0.2s}
 .btn-add:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-voice{background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all 0.2s}
+.btn-voice:hover{border-color:var(--orange);color:var(--orange)}
 .ctrl{max-width:1000px;margin:0 auto;padding:20px 24px 0}
 .sw{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:12px 16px;border:1px solid var(--border)}
 .sw input{flex:1;border:none;background:transparent;font-size:15px;color:var(--text);font-family:var(--f)}
@@ -116,6 +120,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--orange)!
 .fa{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
 .bp{background:var(--orange);color:#0a0a0f;border:none;border-radius:12px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all 0.2s}
 .bp:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.bp:disabled{opacity:0.6;cursor:default;transform:none}
 .bs{background:var(--card2);color:var(--text2);border:1px solid var(--border2);border-radius:12px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f);transition:all 0.2s}
 .bs:hover{border-color:var(--border3)}
 .gft{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;border:1px solid rgba(74,222,128,0.25);background:transparent;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--f);transition:all 0.25s}
@@ -131,6 +136,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--orange)!
 .es p{color:var(--text-dim);font-size:14px}
 .sk{animation:sh 1.5s infinite;background:var(--card);border:1px solid var(--border);border-radius:var(--r);height:260px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--orange);color:#0a0a0f;padding:12px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:2000;box-shadow:0 8px 30px var(--og);animation:ti 0.3s ease;pointer-events:none}
+.mic-btn{border-radius:50px!important;padding:16px 36px!important;font-size:16px!important}
 @media(max-width:600px){.hdr{padding:14px 16px}.hdr-title{font-size:18px}.grid{grid-template-columns:1fr;padding:16px}.ctrl{padding:16px}.fc{padding:18px}.dtitle{font-size:26px}.dw,.fw{padding:14px 16px 32px}}
 @media print{.hdr,.ctrl,.dtb,.ps,.fa{display:none!important}body{background:#fff;color:#222}.dw{padding:0;max-width:100%}.ip,.nb{background:#f8f8f8;border-color:#ddd}.sn{background:#333;color:#fff}.ia{color:#e05a20}}
 </style>
@@ -140,14 +146,14 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--orange)!
 <div id="tm"></div>
 <div id="am"></div>
 <div class="mo" id="delmo" style="display:none" onclick="if(event.target===this)closeDel()">
-  <div class="md">
-    <h3>Remove this recipe?</h3>
-    <p>This can't be undone — it'll be permanently deleted from the family cookbook.</p>
-    <div class="mda">
-      <button class="bs" onclick="closeDel()">Keep It</button>
-      <button class="bp" style="background:var(--danger)" onclick="confirmDel()">Remove</button>
-    </div>
-  </div>
+<div class="md">
+<h3>Remove this recipe?</h3>
+<p>This can't be undone — it'll be permanently deleted from the family cookbook.</p>
+<div class="mda">
+<button class="bs" onclick="closeDel()">Keep It</button>
+<button class="bp" style="background:var(--danger)" onclick="confirmDel()">Remove</button>
+</div>
+</div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -157,7 +163,10 @@ const db=firebase.database();
 const CATS=["All Recipes","Breakfast","Lunch","Dinner","Healthy Desserts","Desserts","Snacks","Sauces","Beverages — Alcoholic","Beverages — Non-Alcoholic"];
 const UNITS=["","tsp","tbsp","cup","oz","lb","g","kg","ml","L","pinch","dash","whole","slice","clove","can","bunch","pkg"];
 const MEMBERS=["Sky","Meagan","Grandma","Grandpa","Mom","Dad","Custom"];
+// TODO: replace with your actual pratt-automation-api Worker URL (see the accompanying worker-recipe-endpoint.js route)
+const AI_ENDPOINT="https://pratt-automation-api.YOUR-SUBDOMAIN.workers.dev/structure-recipe";
 let recs=[],synced=false,view="grid",sq="",cf="All Recipes",gf=false,did=null,eid=null,dlid=null,tt=null;
+let voiceOn=false,recog=null,vfinal="",vdraft=null;
 db.ref("recipes").on("value",snap=>{const v=snap.val();recs=v?Object.values(v):[];synced=true;ra();});
 const save=r=>db.ref("recipes/"+r.id).set(r);
 const del=id=>db.ref("recipes/"+id).remove();
@@ -167,40 +176,44 @@ const getPhoto=r=>r.photo||(r.photos&&r.photos[0])||null;
 const getPhotoCaption=r=>r.photoCaption||(r.photoMemories&&r.photoMemories[0]?.caption)||"A delicious memory";
 const getPhotoDate=r=>r.photoDate||(r.photoMemories&&r.photoMemories[0]?.date)||"";
 function toast(m){document.getElementById("tm").innerHTML=`<div class="toast">${esc(m)}</div>`;clearTimeout(tt);tt=setTimeout(()=>{document.getElementById("tm").innerHTML="";},2500);}
-function ra(){rh();if(view==="grid")rg();else if(view==="detail")rd();else if(view==="form")rf();}
-function rh(){document.getElementById("hm").innerHTML=`<div class="hdr"><div class="hdr-in"><div class="hdr-top"><a href="./index.html" class="back">← Pratt Hub</a><div class="hdr-center"><div class="hdr-logo">🍳 FAMILY <span>COOKBOOK</span></div><div class="hdr-sub">${recs.length} recipe${recs.length!==1?"s":""} and counting</div></div><div class="hdr-r"><span class="sync">${synced?"🔴 Live":"⏳ Syncing"}</span>${view==="grid"?`<button class="btn-add" onclick="openForm(null)">+ Add Recipe</button>`:""}</div></div></div></div>`;}
+function ra(){rh();if(view==="grid")rg();else if(view==="detail")rd();else if(view==="form")rf();else if(view==="voice")rv();}
+function rh(){document.getElementById("hm").innerHTML=`<div class="hdr"><div class="hdr-in"><div class="hdr-top"><a href="./index.html" class="back">← Pratt Hub</a><div class="hdr-center"><div class="hdr-logo">🍳 FAMILY <span>COOKBOOK</span></div><div class="hdr-sub">${recs.length} recipe${recs.length!==1?"s":""} and counting</div></div><div class="hdr-r"><span class="sync">${synced?"🔴 Live":"⏳ Syncing"}</span>${view==="grid"?`<button class="btn-voice" onclick="openVoice()">🎤 Voice Notes</button><button class="btn-add" onclick="openForm(null)">+ Add Recipe</button>`:""}</div></div></div></div>`;}
 function rg(){
-  const fil=recs.filter(r=>{const mc=cf==="All Recipes"||r.category===cf;const ms=!sq||r.title.toLowerCase().includes(sq.toLowerCase())||(r.ingredients||[]).some(i=>i.name.toLowerCase().includes(sq.toLowerCase()))||(r.addedBy||"").toLowerCase().includes(sq.toLowerCase());const mg=!gf||r.glutenFree;return mc&&ms&&mg;});
-  const ctrl=`<div class="ctrl"><div class="sw"><span style="color:var(--text-dim)">🔍</span><input id="si" type="text" placeholder="Search recipes, ingredients, or family members…" value="${esc(sq)}"/>${sq?`<button class="sc" onclick="sq='';rg()">✕</button>`:""}</div><div class="fr">${CATS.map(c=>`<button class="cb${cf===c?" on":""}" onclick="cf='${esc(c)}';rg()">${esc(c)}</button>`).join("")}<button class="gfb${gf?" on":""}" onclick="gf=!gf;rg()">GF Gluten Free</button></div></div>`;
-  let gh="";
-  if(!synced){gh=`<div class="grid">${[1,2,3,4,5,6].map(()=>`<div class="sk"></div>`).join("")}</div>`;}
-  else if(!fil.length){gh=`<div class="grid"><div class="es"><div class="ic">📖</div><h3>No recipes found</h3><p>${sq||gf?"Try adjusting your filters":"Add your first family recipe!"}</p></div></div>`;}
-  else{gh=`<div class="grid">${fil.map((r,i)=>`<div class="rc" onclick="openDetail('${r.id}')" style="animation-delay:${i*0.05}s"><div class="ci">${getPhoto(r)?`<img src="${getPhoto(r)}" alt="${esc(r.title)}" onerror="this.parentElement.innerHTML='🍽️'"/>`:`🍽️`}</div><div class="cb2"><div class="cc">${esc(r.category)}${r.glutenFree?`<span class="gfbadge">GF</span>`:""}</div><div class="ct">${esc(r.title)}</div><div class="cd">${r.description?r.description.slice(0,80)+(r.description.length>80?"…":""):"A family favorite"}</div><div class="cm"><span>⏱ ${esc(r.prepTime||"—")}</span><span>🍽 Serves ${r.servings||"—"}</span>${r.addedBy?`<span class="aby">by ${esc(r.addedBy)}</span>`:""}</div></div></div>`).join("")}</div>`;}
-  document.getElementById("am").innerHTML=ctrl+gh;
-  document.getElementById("si")?.addEventListener("input",e=>{sq=e.target.value;rg();});
+const fil=recs.filter(r=>{const mc=cf==="All Recipes"||r.category===cf;const ms=!sq||r.title.toLowerCase().includes(sq.toLowerCase())||(r.ingredients||[]).some(i=>i.name.toLowerCase().includes(sq.toLowerCase()))||(r.addedBy||"").toLowerCase().includes(sq.toLowerCase());const mg=!gf||r.glutenFree;return mc&&ms&&mg;});
+const ctrl=`<div class="ctrl"><div class="sw"><span style="color:var(--text-dim)">🔍</span><input id="si" type="text" placeholder="Search recipes, ingredients, or family members…" value="${esc(sq)}"/>${sq?`<button class="sc" onclick="sq='';rg()">✕</button>`:""}</div><div class="fr">${CATS.map(c=>`<button class="cb${cf===c?" on":""}" onclick="cf='${esc(c)}';rg()">${esc(c)}</button>`).join("")}<button class="gfb${gf?" on":""}" onclick="gf=!gf;rg()">GF Gluten Free</button></div></div>`;
+let gh="";
+if(!synced){gh=`<div class="grid">${[1,2,3,4,5,6].map(()=>`<div class="sk"></div>`).join("")}</div>`;}
+else if(!fil.length){gh=`<div class="grid"><div class="es"><div class="ic">📖</div><h3>No recipes found</h3><p>${sq||gf?"Try adjusting your filters":"Add your first family recipe!"}</p></div></div>`;}
+else{gh=`<div class="grid">${fil.map((r,i)=>`<div class="rc" onclick="openDetail('${r.id}')" style="animation-delay:${i*0.05}s"><div class="ci">${getPhoto(r)?`<img src="${getPhoto(r)}" alt="${esc(r.title)}" onerror="this.parentElement.innerHTML='🍽️'"/>`:`🍽️`}</div><div class="cb2"><div class="cc">${esc(r.category)}${r.glutenFree?`<span class="gfbadge">GF</span>`:""}</div><div class="ct">${esc(r.title)}</div><div class="cd">${r.description?r.description.slice(0,80)+(r.description.length>80?"…":""):"A family favorite"}</div><div class="cm"><span>⏱ ${esc(r.prepTime||"—")}</span><span>🍽 Serves ${r.servings||"—"}</span>${r.addedBy?`<span class="aby">by ${esc(r.addedBy)}</span>`:""}</div></div></div>`).join("")}</div>`;}
+document.getElementById("am").innerHTML=ctrl+gh;
+document.getElementById("si")?.addEventListener("input",e=>{sq=e.target.value;rg();});
 }
 function rd(){
-  const r=recs.find(x=>x.id===did);if(!r){view="grid";ra();return;}
-  const ph=getPhoto(r);const phCap=getPhotoCaption(r);const phDate=getPhotoDate(r);
-  document.getElementById("am").innerHTML=`<div class="dw"><div class="dtb"><button class="bbk" onclick="goGrid()">← Back</button><div class="das"><button class="bi" onclick="printR('${r.id}')">🖨️ Print</button><button class="bi" onclick="openForm('${r.id}')">✏️ Edit</button><button class="bi dng" onclick="openDel('${r.id}')">🗑️ Delete</button></div></div><div><div class="dcat">${esc(r.category)}${r.glutenFree?`<span class="gfbadge" style="margin-left:8px">GF</span>`:""}</div><h1 class="dtitle">${esc(r.title)}</h1>${r.description?`<p class="ddesc">${esc(r.description)}</p>`:""}<div class="dmeta">${r.prepTime?`<span class="mc">⏱ Prep: ${esc(r.prepTime)}</span>`:""}${r.cookTime?`<span class="mc">🔥 Cook: ${esc(r.cookTime)}</span>`:""}${r.servings?`<span class="mc">🍽 Serves ${r.servings}</span>`:""}${r.addedBy?`<span class="mc">❤️ by ${esc(r.addedBy)}</span>`:""}</div></div><div class="dcols"><div class="ip"><div class="st">Ingredients</div>${(r.ingredients||[]).map(i=>`<div class="ir"><span class="ia">${esc(i.amount)} ${esc(i.unit)}</span><span class="in2">${esc(i.name)}</span></div>`).join("")}</div><div><div class="st">Instructions</div><div class="sl2">${(r.steps||[]).map((s,i)=>`<div class="si2"><span class="sn">${i+1}</span><span>${esc(s)}</span></div>`).join("")}</div></div></div>${r.notes?`<div class="nb"><strong style="color:var(--orange)">Family Notes:</strong> ${esc(r.notes)}</div>`:""}<div class="ps"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="st" style="margin-bottom:0">📸 Memory</div>${!ph?`<label class="btn-add" style="cursor:pointer;font-size:12px;padding:8px 14px">+ Add Photo<input type="file" accept="image/*" onchange="upPhoto(event,'${r.id}')" style="display:none"/></label>`:""}</div>${ph?`<div class="pb"><img src="${ph}" alt="${esc(r.title)}" onerror="this.style.display='none'"/><button class="pd" onclick="rmPhoto('${r.id}')">✕</button>${phCap?`<div class="pct">${esc(phCap)}</div>`:""}</div>`:``}<p style="color:var(--text-dim);font-style:italic;font-size:14px">${!ph?"No photo yet — snap a pic next time you make this!":""}</p></div></div>`;
+const r=recs.find(x=>x.id===did);if(!r){view="grid";ra();return;}
+const ph=getPhoto(r);const phCap=getPhotoCaption(r);const phDate=getPhotoDate(r);
+document.getElementById("am").innerHTML=`<div class="dw"><div class="dtb"><button class="bbk" onclick="goGrid()">← Back</button><div class="das"><button class="bi" onclick="printR('${r.id}')">🖨️ Print</button><button class="bi" onclick="openForm('${r.id}')">✏️ Edit</button><button class="bi dng" onclick="openDel('${r.id}')">🗑️ Delete</button></div></div><div><div class="dcat">${esc(r.category)}${r.glutenFree?`<span class="gfbadge" style="margin-left:8px">GF</span>`:""}</div><h1 class="dtitle">${esc(r.title)}</h1>${r.description?`<p class="ddesc">${esc(r.description)}</p>`:""}<div class="dmeta">${r.prepTime?`<span class="mc">⏱ Prep: ${esc(r.prepTime)}</span>`:""}${r.cookTime?`<span class="mc">🔥 Cook: ${esc(r.cookTime)}</span>`:""}${r.servings?`<span class="mc">🍽 Serves ${r.servings}</span>`:""}${r.addedBy?`<span class="mc">❤️ by ${esc(r.addedBy)}</span>`:""}</div></div><div class="dcols"><div class="ip"><div class="st">Ingredients</div>${(r.ingredients||[]).map(i=>`<div class="ir"><span class="ia">${esc(i.amount)} ${esc(i.unit)}</span><span class="in2">${esc(i.name)}</span></div>`).join("")}</div><div><div class="st">Instructions</div><div class="sl2">${(r.steps||[]).map((s,i)=>`<div class="si2"><span class="sn">${i+1}</span><span>${esc(s)}</span></div>`).join("")}</div></div></div>${r.notes?`<div class="nb"><strong style="color:var(--orange)">Family Notes:</strong> ${esc(r.notes)}</div>`:""}<div class="ps"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="st" style="margin-bottom:0">📸 Memory</div>${!ph?`<label class="btn-add" style="cursor:pointer;font-size:12px;padding:8px 14px">+ Add Photo<input type="file" accept="image/*" onchange="upPhoto(event,'${r.id}')" style="display:none"/></label>`:""}</div>${ph?`<div class="pb"><img src="${ph}" alt="${esc(r.title)}" onerror="this.style.display='none'"/><button class="pd" onclick="rmPhoto('${r.id}')">✕</button>${phCap?`<div class="pct">${esc(phCap)}</div>`:""}</div>`:``}<p style="color:var(--text-dim);font-style:italic;font-size:14px">${!ph?"No photo yet — snap a pic next time you make this!":""}</p></div></div>`;
 }
 function rf(){
-  const r=eid?recs.find(x=>x.id===eid):null;
-  const ings=r?.ingredients?.length?r.ingredients:[{id:uid(),name:"",amount:"",unit:""}];
-  const steps=r?.steps?.length?r.steps:[""];
-  const isC=r?.addedBy&&!["Sky","Meagan","Grandma","Grandpa","Mom","Dad",""].includes(r.addedBy);
-  document.getElementById("am").innerHTML=`<div class="fw"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><button class="bbk" onclick="goGrid()">← Cancel</button><h2 style="font-family:var(--fd);font-size:20px;font-weight:700">${r?"Edit Recipe":"New Recipe"}</h2><div style="width:80px"></div></div><div class="fc"><div class="fg"><label class="lbl">Recipe Title *</label><input class="inp" id="ft" value="${esc(r?.title||"")}" placeholder="e.g. Grandma's Famous Pot Roast"/></div><div class="frow"><div class="fg"><label class="lbl">Category</label><select class="sel" id="fcat">${CATS.filter(c=>c!=="All Recipes").map(c=>`<option value="${c}"${r?.category===c?" selected":""}>${esc(c)}</option>`).join("")}</select></div><div class="fg"><label class="lbl">Added By</label><select class="sel" id="fab" onchange="document.getElementById('fcus').style.display=this.value==='Custom'?'block':'none'"><option value="">Select…</option>${MEMBERS.map(m=>`<option value="${m}"${r?.addedBy===m?" selected":isC&&m==="Custom"?" selected":""}>${m}</option>`).join("")}</select><input class="inp" id="fcus" value="${isC?esc(r.addedBy):""}" placeholder="Enter name…" style="margin-top:8px;display:${isC?"block":"none"}"/></div></div><div class="fg"><label class="lbl">Description</label><textarea class="ta" id="fd" rows="3" placeholder="The story behind this recipe…">${esc(r?.description||"")}</textarea></div><div class="frow"><div class="fg"><label class="lbl">Prep Time</label><input class="inp" id="fp" value="${esc(r?.prepTime||"")}" placeholder="e.g. 15 min"/></div><div class="fg"><label class="lbl">Cook Time</label><input class="inp" id="fck" value="${esc(r?.cookTime||"")}" placeholder="e.g. 45 min"/></div><div class="fg"><label class="lbl">Servings</label><input class="inp" id="fsv" type="number" value="${r?.servings||4}"/></div></div><div class="fg"><label class="lbl">Dietary</label><button type="button" class="gft${r?.glutenFree?" on":""}" id="gft" onclick="this.classList.toggle('on');this.textContent=this.classList.contains('on')?'GF Gluten Free ✓':'GF Gluten Free'">${r?.glutenFree?"GF Gluten Free ✓":"GF Gluten Free"}</button></div><div class="fg"><label class="lbl">Ingredients</label><div id="il">${ings.map(ing=>`<div class="irf"><input class="inp" data-a value="${esc(ing.amount)}" placeholder="Amt" style="width:65px;flex:none"/><select class="sel" data-u style="width:78px;flex:none">${UNITS.map(u=>`<option value="${u}"${ing.unit===u?" selected":""}>${u||"—"}</option>`).join("")}</select><input class="inp inn" data-n value="${esc(ing.name)}" placeholder="Ingredient"/><button class="rmb" onclick="this.parentElement.remove()">✕</button></div>`).join("")}</div><button class="arb" onclick="addI()">+ Add Ingredient</button></div><div class="fg"><label class="lbl">Instructions</label><div id="sl3">${steps.map((s,i)=>`<div class="srf"><span class="snb">${i+1}</span><textarea class="ta" data-s rows="2" style="flex:1" placeholder="Step ${i+1}…">${esc(s)}</textarea><button class="rmb" onclick="this.parentElement.remove()">✕</button></div>`).join("")}</div><button class="arb" onclick="addS()">+ Add Step</button></div><div class="fg"><label class="lbl">Family Notes / Tips</label><textarea class="ta" id="fn" rows="3" placeholder="Any special tips, substitutions, or stories…">${esc(r?.notes||"")}</textarea></div><div class="fa"><button class="bs" onclick="goGrid()">Cancel</button><button class="bp" onclick="subForm()">${r?"Save Changes":"Add to Cookbook"}</button></div></div></div>`;
+const r=eid?recs.find(x=>x.id===eid):null;
+const d=r?null:vdraft;
+const ings=r?.ingredients?.length?r.ingredients:(d?.ingredients?.length?d.ingredients.map(i=>({id:uid(),name:i.name||"",amount:i.amount||"",unit:i.unit||""})):[{id:uid(),name:"",amount:"",unit:""}]);
+const steps=r?.steps?.length?r.steps:(d?.steps?.length?d.steps:[""]);
+const isC=r?.addedBy&&!["Sky","Meagan","Grandma","Grandpa","Mom","Dad",""].includes(r.addedBy);
+const svVal=r?(r.servings||4):(d&&d.servings?d.servings:"");
+const gfOn=r?!!r.glutenFree:(d?.glutenFree===true);
+const catVal=r?.category||d?.category||"";
+document.getElementById("am").innerHTML=`<div class="fw"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><button class="bbk" onclick="goGrid()">← Cancel</button><h2 style="font-family:var(--fd);font-size:20px;font-weight:700">${r?"Edit Recipe":"New Recipe"}</h2><div style="width:80px"></div></div>${d?`<div class="nb" style="border-left-color:var(--green)">🎤 <strong style="color:var(--green)">AI draft from your voice notes</strong> — double-check everything below, especially anything left blank, before saving.</div>`:""}<div class="fc"><div class="fg"><label class="lbl">Recipe Title *</label><input class="inp" id="ft" value="${esc(r?.title||d?.title||"")}" placeholder="e.g. Grandma's Famous Pot Roast"/></div><div class="frow"><div class="fg"><label class="lbl">Category</label><select class="sel" id="fcat">${CATS.filter(c=>c!=="All Recipes").map(c=>`<option value="${c}"${catVal===c?" selected":""}>${esc(c)}</option>`).join("")}</select></div><div class="fg"><label class="lbl">Added By</label><select class="sel" id="fab" onchange="document.getElementById('fcus').style.display=this.value==='Custom'?'block':'none'"><option value="">Select…</option>${MEMBERS.map(m=>`<option value="${m}"${r?.addedBy===m?" selected":isC&&m==="Custom"?" selected":""}>${m}</option>`).join("")}</select><input class="inp" id="fcus" value="${isC?esc(r.addedBy):""}" placeholder="Enter name…" style="margin-top:8px;display:${isC?"block":"none"}"/></div></div><div class="fg"><label class="lbl">Description</label><textarea class="ta" id="fd" rows="3" placeholder="The story behind this recipe…">${esc(r?.description||d?.description||"")}</textarea></div><div class="frow"><div class="fg"><label class="lbl">Prep Time</label><input class="inp" id="fp" value="${esc(r?.prepTime||d?.prepTime||"")}" placeholder="e.g. 15 min"/></div><div class="fg"><label class="lbl">Cook Time</label><input class="inp" id="fck" value="${esc(r?.cookTime||d?.cookTime||"")}" placeholder="e.g. 45 min"/></div><div class="fg"><label class="lbl">Servings${d&&!svVal?` <span style="color:var(--text-faint);text-transform:none;font-weight:400">(not mentioned — fill in)</span>`:""}</label><input class="inp" id="fsv" type="number" value="${svVal}" placeholder="4"/></div></div><div class="fg"><label class="lbl">Dietary</label><button type="button" class="gft${gfOn?" on":""}" id="gft" onclick="this.classList.toggle('on');this.textContent=this.classList.contains('on')?'GF Gluten Free ✓':'GF Gluten Free'">${gfOn?"GF Gluten Free ✓":"GF Gluten Free"}</button>${d&&d.glutenFree==null?`<span style="margin-left:10px;font-size:12px;color:var(--text-faint)">not mentioned — set if it applies</span>`:""}</div><div class="fg"><label class="lbl">Ingredients</label><div id="il">${ings.map(ing=>`<div class="irf"><input class="inp" data-a value="${esc(ing.amount)}" placeholder="Amt" style="width:65px;flex:none"/><select class="sel" data-u style="width:78px;flex:none">${UNITS.map(u=>`<option value="${u}"${ing.unit===u?" selected":""}>${u||"—"}</option>`).join("")}</select><input class="inp inn" data-n value="${esc(ing.name)}" placeholder="Ingredient"/><button class="rmb" onclick="this.parentElement.remove()">✕</button></div>`).join("")}</div><button class="arb" onclick="addI()">+ Add Ingredient</button></div><div class="fg"><label class="lbl">Instructions</label><div id="sl3">${steps.map((s,i)=>`<div class="srf"><span class="snb">${i+1}</span><textarea class="ta" data-s rows="2" style="flex:1" placeholder="Step ${i+1}…">${esc(s)}</textarea><button class="rmb" onclick="this.parentElement.remove()">✕</button></div>`).join("")}</div><button class="arb" onclick="addS()">+ Add Step</button></div><div class="fg"><label class="lbl">Family Notes / Tips</label><textarea class="ta" id="fn" rows="3" placeholder="Any special tips, substitutions, or stories…">${esc(r?.notes||d?.notes||"")}</textarea></div><div class="fa"><button class="bs" onclick="goGrid()">Cancel</button><button class="bp" onclick="subForm()">${r?"Save Changes":"Add to Cookbook"}</button></div></div></div>`;
 }
 function addI(){const l=document.getElementById("il");const d=document.createElement("div");d.className="irf";d.innerHTML=`<input class="inp" data-a placeholder="Amt" style="width:65px;flex:none"/><select class="sel" data-u style="width:78px;flex:none">${UNITS.map(u=>`<option value="${u}">${u||"—"}</option>`).join("")}</select><input class="inp inn" data-n placeholder="Ingredient"/><button class="rmb" onclick="this.parentElement.remove()">✕</button>`;l.appendChild(d);}
 function addS(){const l=document.getElementById("sl3");const i=l.children.length+1;const d=document.createElement("div");d.className="srf";d.innerHTML=`<span class="snb">${i}</span><textarea class="ta" data-s rows="2" style="flex:1" placeholder="Step ${i}…"></textarea><button class="rmb" onclick="this.parentElement.remove()">✕</button>`;l.appendChild(d);}
 function subForm(){
-  const title=document.getElementById("ft")?.value.trim();if(!title){toast("Please enter a recipe title");return;}
-  const ings=[];document.querySelectorAll("#il .irf").forEach(row=>{const name=row.querySelector("[data-n]")?.value.trim();if(!name)return;ings.push({id:uid(),name,amount:row.querySelector("[data-a]")?.value.trim()||"",unit:row.querySelector("[data-u]")?.value||""});});
-  const steps=[];document.querySelectorAll("#sl3 [data-s]").forEach(ta=>{const v=ta.value.trim();if(v)steps.push(v);});
-  const abr=document.getElementById("fab")?.value;const ab=abr==="Custom"?(document.getElementById("fcus")?.value.trim()||""):abr;
-  const ex=eid?recs.find(x=>x.id===eid):null;
-  const recipe={id:ex?.id||uid(),title,category:document.getElementById("fcat")?.value||"Dinner",description:document.getElementById("fd")?.value.trim()||"",prepTime:document.getElementById("fp")?.value.trim()||"",cookTime:document.getElementById("fck")?.value.trim()||"",servings:parseInt(document.getElementById("fsv")?.value)||4,glutenFree:document.getElementById("gft")?.classList.contains("on")||false,addedBy:ab,notes:document.getElementById("fn")?.value.trim()||"",ingredients:ings,steps,dateAdded:ex?.dateAdded||new Date().toISOString().slice(0,10),photo:ex?.photo||null,photoCaption:ex?.photoCaption||""};
-  save(recipe);toast(eid?"Recipe updated!":"Recipe added!");goGrid();
+const title=document.getElementById("ft")?.value.trim();if(!title){toast("Please enter a recipe title");return;}
+const ings=[];document.querySelectorAll("#il .irf").forEach(row=>{const name=row.querySelector("[data-n]")?.value.trim();if(!name)return;ings.push({id:uid(),name,amount:row.querySelector("[data-a]")?.value.trim()||"",unit:row.querySelector("[data-u]")?.value||""});});
+const steps=[];document.querySelectorAll("#sl3 [data-s]").forEach(ta=>{const v=ta.value.trim();if(v)steps.push(v);});
+const abr=document.getElementById("fab")?.value;const ab=abr==="Custom"?(document.getElementById("fcus")?.value.trim()||""):abr;
+const ex=eid?recs.find(x=>x.id===eid):null;
+const recipe={id:ex?.id||uid(),title,category:document.getElementById("fcat")?.value||"Dinner",description:document.getElementById("fd")?.value.trim()||"",prepTime:document.getElementById("fp")?.value.trim()||"",cookTime:document.getElementById("fck")?.value.trim()||"",servings:parseInt(document.getElementById("fsv")?.value)||4,glutenFree:document.getElementById("gft")?.classList.contains("on")||false,addedBy:ab,notes:document.getElementById("fn")?.value.trim()||"",ingredients:ings,steps,dateAdded:ex?.dateAdded||new Date().toISOString().slice(0,10),photo:ex?.photo||null,photoCaption:ex?.photoCaption||""};
+save(recipe);toast(eid?"Recipe updated!":"Recipe added!");goGrid();
 }
 function upPhoto(e,id){const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=ev=>{const r=recs.find(x=>x.id===id);if(!r)return;r.photo=ev.target.result;save(r);toast("Photo saved!");rd2();};rd.readAsDataURL(f);}
 function rmPhoto(id){const r=recs.find(x=>x.id===id);if(!r)return;r.photo=null;r.photoCaption="";save(r);rd2();}
@@ -212,7 +225,76 @@ function closeDel(){document.getElementById("delmo").style.display="none";docume
 function confirmDel(){if(!dlid)return;del(dlid);closeDel();toast("Recipe removed");goGrid();}
 function openDetail(id){did=id;eid=null;view="detail";ra();}
 function openForm(id){eid=id;view="form";ra();}
-function goGrid(){view="grid";did=null;eid=null;ra();}
+function goGrid(){view="grid";did=null;eid=null;vdraft=null;ra();}
+
+/* ---------- Voice Notes ---------- */
+function openVoice(){vfinal="";vdraft=null;voiceOn=false;view="voice";ra();}
+function rv(){
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const supported=!!SR;
+document.getElementById("am").innerHTML=`<div class="fw"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><button class="bbk" onclick="stopRecAndLeave()">← Cancel</button><h2 style="font-family:var(--fd);font-size:20px;font-weight:700">🎤 Voice Notes</h2><div style="width:80px"></div></div><div class="fc">${supported?`<p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;line-height:1.5">Tap the mic and talk through the recipe naturally — ingredients, amounts, steps, in any order, pausing whenever you need to. Tap it again to pause. When you're done, hit "Organize with AI" to turn it into a recipe draft you can review before saving.</p><div style="text-align:center;margin-bottom:22px"><button id="micbtn" class="bp mic-btn" onclick="toggleRec()">${voiceOn?"⏸ Pause":"🎤 Start Talking"}</button><div id="vstatus" style="margin-top:10px;font-size:13px;color:${voiceOn?"var(--green)":"var(--text-dim)"}" class="${voiceOn?"vpulse":""}">${voiceOn?"● Listening…":"Ready when you are"}</div></div>`:`<p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;line-height:1.5">Voice input isn't available in this browser right now. You can still type freeform below — order doesn't matter — and "Organize with AI" will sort it into a recipe.</p>`}<div class="fg"><label class="lbl">Transcript${supported?" (edit anything that got misheard)":""}</label><textarea class="ta" id="vtext" rows="10" placeholder="${supported?"Your words will show up here as you talk…":"Type the recipe here, in any order…"}">${esc(vfinal)}</textarea></div><div class="fa"><button class="bs" onclick="stopRecAndLeave()">Cancel</button><button class="bp" id="vprocbtn" onclick="processVoice()">✨ Organize with AI</button></div></div></div>`;
+}
+function toggleRec(){
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR)return;
+if(voiceOn){
+voiceOn=false;
+if(recog){recog.onend=null;try{recog.stop();}catch(e){}}
+rv();
+return;
+}
+voiceOn=true;
+recog=new SR();
+recog.continuous=true;
+recog.interimResults=true;
+recog.lang="en-US";
+recog.onresult=e=>{
+let interim="";
+for(let i=e.resultIndex;i<e.results.length;i++){
+const t=e.results[i][0].transcript;
+if(e.results[i].isFinal){vfinal+=(vfinal&&!/\s$/.test(vfinal)?" ":"")+t.trim();}
+else{interim+=t;}
+}
+const ta=document.getElementById("vtext");
+if(ta)ta.value=vfinal+(interim?" "+interim:"");
+};
+recog.onerror=e=>{
+if(e.error==="not-allowed"||e.error==="service-not-allowed"){toast("Microphone access denied — check Settings > Safari > Microphone");voiceOn=false;rv();}
+/* 'no-speech' etc. are expected during pauses — onend below restarts automatically */
+};
+recog.onend=()=>{
+if(voiceOn){try{recog.start();}catch(e){}} /* iOS Safari stops listening after brief silence — restart to keep it going while she's talking as she cooks */
+};
+try{recog.start();}catch(e){toast("Couldn't start the microphone");voiceOn=false;}
+rv();
+}
+function stopRecAndLeave(){
+if(recog){recog.onend=null;try{recog.stop();}catch(e){}}
+voiceOn=false;vfinal="";vdraft=null;
+goGrid();
+}
+async function processVoice(){
+const txt=document.getElementById("vtext")?.value.trim();
+if(!txt){toast("Talk through the recipe first, or type it in");return;}
+if(recog){recog.onend=null;try{recog.stop();}catch(e){}}
+voiceOn=false;
+const btn=document.getElementById("vprocbtn");
+if(btn){btn.disabled=true;btn.textContent="Organizing…";}
+try{
+const res=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({transcript:txt})});
+if(!res.ok)throw new Error("bad response");
+const draft=await res.json();
+vdraft=draft;
+eid=null;
+view="form";
+ra();
+toast("Draft ready — check it over before saving!");
+}catch(err){
+toast("Couldn't reach the AI — check your connection and try again");
+if(btn){btn.disabled=false;btn.textContent="✨ Organize with AI";}
+}
+}
+
 ra();
 </script>
 </body>
